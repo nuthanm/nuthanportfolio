@@ -1,0 +1,231 @@
+# Nuthan Murarysetty — Portfolio
+
+> Personal portfolio website for **Nuthan Murarysetty** — Application Architect, Full Stack Developer, Instructor, and Content Creator with 12+ years of enterprise engineering experience.
+
+---
+
+## 🌐 Live Preview
+
+[![Portfolio Preview](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fnuthanportfolio.vercel.app%2F?w=1200)](https://nuthanportfolio.vercel.app/)
+
+---
+
+## ✨ Features
+
+| Section | Description |
+|---|---|
+| **Hero** | Introduction, tagline, social links, and resume download |
+| **AI Tools Strip** | Transparent showcase of AI copilots used during development |
+| **Career Timeline** | Full professional history from 2013 to present |
+| **Skills** | Categorised tech stack across Frontend, Backend, Cloud, Databases, and more |
+| **Portfolio** | Live project cards with preview thumbnails |
+| **Contact** | Secure contact form with anti-spam, honeypot, captcha, and Gmail SMTP delivery |
+| **Footer** | Attribution, copyright, and social links |
+
+---
+
+## 🖼️ Screenshots
+
+### Hero Section
+![Hero](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fnuthanportfolio.vercel.app%2F?w=1200&h=630)
+
+### Portfolio Projects
+| Investment Tracker | Debt Tracker | Private Journal |
+|---|---|---|
+| [![Investment Tracker](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmyinvestmenttracker.vercel.app%2F?w=400)](https://myinvestmenttracker.vercel.app/) | [![Debt Tracker](https://s.wordpress.com/mshots/v1/http%3A%2F%2Fmydebttracker.vercel.app%2F?w=400)](http://mydebttracker.vercel.app/) | [![Private Journal](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fprivate-journal.vercel.app%2F?w=400)](https://private-journal.vercel.app/) |
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white&style=flat-square)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white&style=flat-square)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white&style=flat-square)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-11-0055FF?logo=framer&logoColor=white&style=flat-square)
+
+### Backend / API
+![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white&style=flat-square)
+![Nodemailer](https://img.shields.io/badge/Nodemailer-Gmail_SMTP-0078D4?style=flat-square)
+
+### Infrastructure
+![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?logo=vercel&logoColor=white&style=flat-square)
+![GitHub](https://img.shields.io/badge/Source-GitHub-181717?logo=github&logoColor=white&style=flat-square)
+
+---
+
+## 📁 Project Structure
+
+```
+nuthanportfolio/
+├── api/                        # Vercel serverless API functions
+│   ├── contact.js              # Contact form handler (email via Gmail SMTP)
+│   └── health.js               # Health check endpoint
+├── docs/                       # Developer guides
+│   ├── contact-form-gmail-setup.md
+│   └── content-update-guide.md
+├── public/                     # Static assets
+│   ├── logos/                  # Technology and AI tool logos (SVG)
+│   ├── thumbnails/             # Project preview images
+│   └── favicon.svg
+├── server/
+│   └── index.js                # Local Express server (dev only)
+├── src/
+│   ├── components/             # React components
+│   │   ├── AiToolsStrip.jsx
+│   │   ├── Contact.jsx
+│   │   ├── Footer.jsx
+│   │   ├── Hero.jsx
+│   │   ├── ImportantInfo.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── Portfolio.jsx
+│   │   ├── Skills.jsx
+│   │   └── Timeline.jsx
+│   ├── data.js                 # ⭐ All portfolio content lives here
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── .env.example                # Environment variable template
+├── index.html
+├── package.json
+├── tailwind.config.js
+└── vite.config.js
+```
+
+> **To update any portfolio content** (bio, timeline, skills, projects, certifications), edit **`src/data.js`** only. See [`docs/content-update-guide.md`](./docs/content-update-guide.md) for details.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+
+- npm
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/nuthanm/nuthanportfolio.git
+cd nuthanportfolio
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure environment variables
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and fill in your Gmail SMTP credentials:
+
+```env
+VITE_CONTACT_ENDPOINT=/api/contact
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=yourgmail@gmail.com
+SMTP_PASS=your_gmail_app_password
+SMTP_FROM="Your Name <yourgmail@gmail.com>"
+MAIL_TO=yourgmail@gmail.com
+
+RATE_LIMIT_WINDOW_MS=600000
+RATE_LIMIT_MAX=10
+```
+
+See [`docs/contact-form-gmail-setup.md`](./docs/contact-form-gmail-setup.md) for generating a Gmail App Password.
+
+### 4. Run locally
+
+**Frontend only (no contact form email):**
+```bash
+npm run dev
+```
+
+**Frontend + local API backend:**
+```bash
+# Terminal 1
+npm run api
+
+# Terminal 2
+npm run dev
+```
+
+The site will be available at `http://localhost:5173`.
+
+### 5. Build for production
+
+```bash
+npm run build
+npm run preview
+```
+
+---
+
+## ☁️ Deployment (Vercel)
+
+1. Push this repository to GitHub.
+2. Import the project in [Vercel](https://vercel.com/).
+3. Add the following **Environment Variables** in Vercel Project Settings:
+
+   | Variable | Value |
+   |---|---|
+   | `SMTP_HOST` | `smtp.gmail.com` |
+   | `SMTP_PORT` | `587` |
+   | `SMTP_SECURE` | `false` |
+   | `SMTP_USER` | your Gmail address |
+   | `SMTP_PASS` | your Gmail App Password |
+   | `SMTP_FROM` | display name + email |
+   | `MAIL_TO` | receiver Gmail address |
+   | `RATE_LIMIT_WINDOW_MS` | `600000` |
+   | `RATE_LIMIT_MAX` | `10` |
+
+4. Click **Deploy**. Vercel auto-detects the `api/` folder and serves it as serverless functions.
+
+---
+
+## 🔒 Security
+
+- **Rate limiting** — contact form limited to 10 requests per 10 minutes per IP.
+- **Honeypot field** — hidden field traps bots silently.
+- **Captcha challenge** — simple human verification required before submit.
+- **Server-side validation** — strict length and email format checks on every request.
+- **Helmet** — HTTP security headers applied on the Express backend.
+- **CORS** — restricted to the configured `FRONTEND_ORIGIN`.
+- **Environment secrets** — all sensitive values are stored in `.env` (never committed).
+
+---
+
+## 📄 Content Attribution
+
+- Project preview thumbnails are generated via WordPress mShots from publicly accessible URLs.
+- Technology and brand names (Microsoft, Azure, GitHub, OpenAI, Anthropic, LinkedIn) belong to their respective owners.
+- The profile image is sourced from the owner's public GitHub profile.
+- Logo files are simplified visual references for identification purposes only.
+
+---
+
+## 🌍 Social & Links
+
+| Platform | Link |
+|---|---|
+| GitHub | [github.com/nuthanm](https://github.com/nuthanm) |
+| LinkedIn | [linkedin.com/in/nuthanm](https://www.linkedin.com/in/nuthanm/) |
+| X / Twitter | [x.com/nuthanmurari](https://x.com/nuthanmurari) |
+| Medium | [nuthanmurarysetty.medium.com](https://nuthanmurarysetty.medium.com/) |
+| CodeMentor | [codementor.io/@inboxnuthan](https://www.codementor.io/@inboxnuthan) |
+
+---
+
+## 📬 Contact
+
+Have feedback, collaboration ideas, or questions? Use the **Contact** section on the live portfolio or email directly at **inbox.nuthan@gmail.com**.
+
+---
+
+© 2026 Nuthan Murarysetty. All rights reserved.
