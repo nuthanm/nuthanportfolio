@@ -1,0 +1,36 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="700" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#e2e8f0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="700" fill="url(#bg)"/>
+  <rect x="72" y="56" width="1056" height="588" rx="24" fill="#ffffff" stroke="#dbe4ee"/>
+
+  <rect x="108" y="96" width="300" height="14" rx="7" fill="#cbd5e1"/>
+  <rect x="108" y="128" width="470" height="18" rx="9" fill="#0f172a" fill-opacity="0.9"/>
+  <rect x="108" y="160" width="560" height="14" rx="7" fill="#64748b" fill-opacity="0.8"/>
+
+  <rect x="108" y="212" width="984" height="380" rx="18" fill="#f8fafc" stroke="#dbe4ee"/>
+
+  <rect x="138" y="244" width="620" height="40" rx="10" fill="#ffffff" stroke="#dbe4ee"/>
+  <rect x="162" y="258" width="200" height="12" rx="6" fill="#94a3b8"/>
+  <rect x="388" y="258" width="340" height="12" rx="6" fill="#cbd5e1"/>
+
+  <rect x="138" y="302" width="620" height="132" rx="14" fill="#ffffff" stroke="#dbe4ee"/>
+  <rect x="166" y="334" width="260" height="14" rx="7" fill="#cbd5e1"/>
+  <rect x="166" y="360" width="300" height="12" rx="6" fill="#e2e8f0"/>
+  <rect x="166" y="382" width="230" height="12" rx="6" fill="#e2e8f0"/>
+  <rect x="166" y="404" width="130" height="12" rx="6" fill="#2563eb"/>
+
+  <rect x="786" y="244" width="276" height="190" rx="14" fill="#ffffff" stroke="#dbe4ee"/>
+  <rect x="814" y="278" width="220" height="14" rx="7" fill="#cbd5e1"/>
+  <rect x="814" y="304" width="180" height="12" rx="6" fill="#e2e8f0"/>
+  <rect x="814" y="326" width="200" height="12" rx="6" fill="#e2e8f0"/>
+  <rect x="814" y="356" width="150" height="34" rx="10" fill="#0f172a" fill-opacity="0.88"/>
+
+  <text x="108" y="512" fill="#2563eb" font-size="54" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Let's Evaluate</text>
+  <text x="108" y="552" fill="#64748b" font-size="24" font-family="Segoe UI, Arial, sans-serif">Candidate evaluation and insights dashboard</text>
+</svg>

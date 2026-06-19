@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio Contact Notification</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f1f5f9;
+        background-image:
+          radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.08), transparent 30%),
+          radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.08), transparent 30%),
+          linear-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(37, 99, 235, 0.08) 1px, transparent 1px);
+        background-size: auto, auto, 28px 28px, 28px 28px;
+        font-family: Inter, Segoe UI, Arial, sans-serif;
+        color: #0f172a;
+      }
+      .shell {
+        width: 100%;
+        padding: 24px 12px;
+      }
+      .card {
+        max-width: 680px;
+        margin: 0 auto;
+        background: #ffffff;
+        border: 1px solid #dbe2ea;
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .header {
+        background: linear-gradient(135deg, #dbeafe, #eff6ff);
+        border-bottom: 1px solid #dbe2ea;
+        padding: 18px 22px;
+      }
+      .header-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .brand-badge {
+        width: 96px;
+        height: 56px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #bfdbfe;
+        background: #ffffff;
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.08);
+      }
+      .brand {
+        display: block;
+        font-weight: 800;
+        font-size: 36px;
+        letter-spacing: -0.3px;
+        color: #0f172a;
+        line-height: 1;
+      }
+      .brand .dot {
+        color: #2563eb;
+      }
+      .header-copy {
+        flex: 1;
+      }
+      .title {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.3;
+      }
+      .sub {
+        margin: 6px 0 0;
+        font-size: 13px;
+        color: #475569;
+      }
+      .body {
+        padding: 20px 22px;
+      }
+      .meta {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 14px;
+      }
+      .meta td {
+        font-size: 14px;
+        padding: 8px 0;
+        vertical-align: top;
+        border-bottom: 1px solid #edf2f7;
+      }
+      .meta .k {
+        width: 130px;
+        color: #475569;
+        font-weight: 600;
+      }
+      .meta .v {
+        color: #0f172a;
+      }
+      .message-box {
+        margin-top: 14px;
+        padding: 14px;
+        border: 1px solid #dbe2ea;
+        border-radius: 10px;
+        background: #f8fafc;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #1e293b;
+        white-space: pre-wrap;
+      }
+      .footer {
+        border-top: 1px solid #dbe2ea;
+        background: #f8fafc;
+        padding: 14px 22px 18px;
+      }
+      .footer p {
+        margin: 3px 0;
+        font-size: 12px;
+        color: #64748b;
+      }
+      .footer a {
+        color: #2563eb;
+        text-decoration: none;
+      }
+      .socials {
+        margin-top: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .social-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border: 1px solid #dbe2ea;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #1e40af;
+        line-height: 0;
+      }
+      .social-icon {
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="card">
+        <div class="header">
+          <div class="header-row">
+            <div class="brand-badge">
+              <div class="brand">NM<span class="dot">.</span></div>
+            </div>
+            <div class="header-copy">
+              <h1 class="title">New Contact Form Submission</h1>
+              <p class="sub">Received from your portfolio website contact form.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="body">
+          <table class="meta" role="presentation">
+            <tr>
+              <td class="k">Name</td>
+              <td class="v">John Doe</td>
+            </tr>
+            <tr>
+              <td class="k">Email</td>
+              <td class="v">john.doe@example.com</td>
+            </tr>
+            <tr>
+              <td class="k">Subject</td>
+              <td class="v">Need interview evaluation workflow</td>
+            </tr>
+            <tr>
+              <td class="k">Submitted</td>
+              <td class="v">2026-06-19 17:30 IST</td>
+            </tr>
+          </table>
+
+          <div class="message-box">
+Hi Nuthan,
+
+I reviewed your portfolio and would like to discuss a candidate evaluation automation workflow for our hiring pipeline.
+
+Please share your available slots this week.
+
+Thanks,
+John
+          </div>
+        </div>
+
+        <div class="footer">
+          <p><strong>Nuthan Murarysetty</strong> | Application Architect</p>
+          <p>Email: <a href="mailto:inbox.nuthan@gmail.com">inbox.nuthan@gmail.com</a> | Location: India</p>
+          <p>Social Profiles</p>
+          <div class="socials">
+            <a class="social-link" href="https://github.com/nuthanm" title="GitHub" aria-label="GitHub">
+              <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.58 2 12.23c0 4.52 2.87 8.35 6.84 9.71.5.09.68-.22.68-.49 0-.24-.01-1.03-.01-1.87-2.78.62-3.37-1.22-3.37-1.22-.45-1.19-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.89 1.58 2.34 1.12 2.91.86.09-.66.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.31.1-2.72 0 0 .85-.28 2.78 1.05A9.42 9.42 0 0 1 12 6.84c.85 0 1.7.12 2.5.35 1.92-1.33 2.77-1.05 2.77-1.05.55 1.41.21 2.46.1 2.72.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.58.69.49A10.22 10.22 0 0 0 22 12.23C22 6.58 17.52 2 12 2Z"/></svg>
+            </a>
+            <a class="social-link" href="https://www.linkedin.com/in/nuthanm/?skipRedirect=true" title="LinkedIn" aria-label="LinkedIn">
+              <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6.94 8.5a1.44 1.44 0 1 1 0-2.88 1.44 1.44 0 0 1 0 2.88ZM5.67 9.73h2.54V18H5.67V9.73Zm4.02 0h2.44v1.13h.03c.34-.65 1.17-1.33 2.42-1.33 2.59 0 3.06 1.74 3.06 4V18h-2.54v-3.96c0-.95-.02-2.17-1.3-2.17-1.3 0-1.5 1.03-1.5 2.1V18H9.7V9.73Z"/></svg>
+            </a>
+            <a class="social-link" href="https://x.com/nuthanmurari" title="X" aria-label="X">
+              <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M18.24 3H21l-6.02 6.85L22 21h-5.5l-4.3-5.63L7.24 21H4.47l6.44-7.33L2 3h5.63l3.9 5.16L18.24 3Zm-.97 16.35h1.53L6.8 4.56H5.16l12.1 14.79Z"/></svg>
+            </a>
+            <a class="social-link" href="https://nuthanmurarysetty.medium.com/" title="Medium" aria-label="Medium">
+              <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4 6.5a.8.8 0 0 0-.24-.76L2 3.6V3.3h5.76l4.45 9.75L16.1 3.3H21v.3l-1.5 1.44a.45.45 0 0 0-.17.42v10.58c-.02.16.05.32.17.42L21 18v.3h-7.55V18l1.56-1.52c.15-.15.15-.2.15-.42V7.51l-4.33 10.76h-.59L5.2 7.51v7.19c-.04.29.06.58.27.78l2.02 2.46v.3H2V18l2.02-2.46c.2-.2.29-.5.24-.78V6.5Z"/></svg>
+            </a>
+            <a class="social-link" href="https://www.codementor.io/@inboxnuthan" title="CodeMentor" aria-label="CodeMentor">
+              <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h6a3 3 0 0 1 3 3v8H7a3 3 0 0 1-3-3V5Zm9 0h3a4 4 0 0 1 4 4v5a4 4 0 0 1-4 4h-3V5Zm-7 4v3a1 1 0 0 0 1 1h4V9H6Z"/></svg>
+            </a>
+            <a class="social-link" href="mailto:inbox.nuthan@gmail.com" title="Email" aria-label="Email">
+              <svg class="social-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 7.5h16v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9Z" stroke="currentColor" stroke-width="1.8"/><path d="m4 8 8 6 8-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
