@@ -40,7 +40,7 @@ export default function Contact() {
   const [captchaB, setCaptchaB] = useState(() => Math.floor(Math.random() * 8) + 2)
   const [captchaInput, setCaptchaInput] = useState('')
 
-  const formsEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT || import.meta.env.VITE_FORMSPREE_ENDPOINT
+  const formsEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT || '/api/contact'
 
   const regenerateCaptcha = () => {
     setCaptchaA(Math.floor(Math.random() * 8) + 2)

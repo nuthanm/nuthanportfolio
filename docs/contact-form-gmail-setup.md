@@ -3,6 +3,10 @@
 This guide uses your own lightweight backend endpoint and Gmail SMTP.
 No paid form provider is required.
 
+This project supports Vercel serverless APIs using:
+1. `api/contact.js`
+2. `api/health.js`
+
 ## Prerequisites
 1. Gmail account where you want to receive messages.
 2. 2-Step Verification enabled on Gmail account.
@@ -34,15 +38,30 @@ Your backend endpoint should:
 ## Step 3: Set Frontend Environment Variable
 In project root, create .env file:
 
-VITE_CONTACT_ENDPOINT=https://your-domain.com/api/contact
+VITE_CONTACT_ENDPOINT=/api/contact
 
 Then restart dev server.
 
-For local development with this project backend:
+For local development with this project Express backend:
 1. Copy `.env.example` to `.env`.
 2. Fill `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, and `MAIL_TO`.
 3. Start API server: `npm run api`
 4. Start frontend: `npm run dev`
+
+For Vercel deployment (single project):
+1. Push this repository to GitHub.
+2. Import project in Vercel.
+3. In Vercel Project Settings -> Environment Variables, add:
+   - `SMTP_HOST=smtp.gmail.com`
+   - `SMTP_PORT=587`
+   - `SMTP_SECURE=false`
+   - `SMTP_USER=<your-gmail>`
+   - `SMTP_PASS=<your-app-password>`
+   - `SMTP_FROM=<display-from-value>`
+   - `MAIL_TO=<receiver-gmail>`
+   - `RATE_LIMIT_WINDOW_MS=600000`
+   - `RATE_LIMIT_MAX=10`
+4. Redeploy.
 
 ## Step 4: Test Contact Form
 1. Open portfolio Contact section.
@@ -57,7 +76,6 @@ For local development with this project backend:
    - required captcha challenge
    - hidden honeypot field
 3. Backend protection includes:
-   - CORS allowlist (`FRONTEND_ORIGIN`)
    - rate limiting (`RATE_LIMIT_WINDOW_MS`, `RATE_LIMIT_MAX`)
    - server-side captcha and honeypot checks
    - strict input length and email format validation
