@@ -7,6 +7,7 @@ import Skills from './components/Skills'
 import Portfolio from './components/Portfolio'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import { uiFlags } from './data'
 
 export default function App() {
   return (
@@ -14,7 +15,7 @@ export default function App() {
       <Navbar />
       <main>
         <Hero />
-        <ImportantInfo />
+        {uiFlags.showImportantInfoSection && <ImportantInfo />}
         <AiToolsStrip />
         <Timeline />
         <Skills />

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-scroll'
 import { FiMenu, FiX } from 'react-icons/fi'
-import { personalInfo } from '../data'
+import { personalInfo, uiFlags } from '../data'
 
 const navLinks = [
   { label: 'About', to: 'hero' },
@@ -15,6 +15,9 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const visibleLinks = navLinks.filter((link) =>
+    link.to === 'information' ? uiFlags.showImportantInfoSection : true
+  )
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -41,7 +44,7 @@ export default function Navbar() {
 
         {/* Desktop nav */}
         <ul className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+          {visibleLinks.map((link) => (
             <li key={link.to}>
               <Link
                 to={link.to}
@@ -81,7 +84,7 @@ export default function Navbar() {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden bg-white border-t border-slate-200 px-6 py-4 flex flex-col gap-4">
-          {navLinks.map((link) => (
+          {visibleLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}

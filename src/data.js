@@ -27,6 +27,10 @@ export const githubStats = [
   { label: "Years of IT Experience", value: "12+" },
 ]
 
+export const uiFlags = {
+  showImportantInfoSection: false,
+}
+
 export const importantInfo = {
   copyrightNotice:
     "All original text, code, design, and project descriptions on this website are owned by Nuthan Murarysetty unless explicitly marked otherwise.",
