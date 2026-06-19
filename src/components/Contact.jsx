@@ -117,7 +117,18 @@ export default function Contact() {
         })
 
         if (!response.ok) {
-          throw new Error('Failed to submit form')
+          let apiError = 'Failed to submit form.'
+          const contentType = response.headers.get('content-type') || ''
+
+          if (contentType.includes('application/json')) {
+            const data = await response.json().catch(() => null)
+            if (data?.error) apiError = data.error
+          } else {
+            const text = await response.text().catch(() => '')
+            if (text) apiError = text.slice(0, 200)
+          }
+
+          throw new Error(apiError)
         }
       } else {
         const subject = encodeURIComponent(`[Portfolio] ${form.subject}`)
@@ -131,7 +142,11 @@ export default function Contact() {
       setForm({ name: '', email: '', subject: '', message: '', website: '' })
       regenerateCaptcha()
     } catch (error) {
-      setSubmitError('Unable to send right now. Please email me directly at inbox.nuthan@gmail.com.')
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : 'Unable to send right now. Please email me directly at inbox.nuthan@gmail.com.'
+      setSubmitError(message)
       regenerateCaptcha()
     } finally {
       setIsSubmitting(false)
