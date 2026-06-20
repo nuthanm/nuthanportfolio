@@ -95,8 +95,8 @@ export const timeline = [
     role: "Application Architect",
     company: "KANINI",
     description:
-      "Leading architecture decisions for enterprise-grade .NET 6 platforms, defining scalable API-first designs, and guiding delivery teams on best practices for resilience, security, and long-term maintainability.",
-    tags: [".NET 6", "Architecture", "Azure API Management", "Scalability"],
+      "Leading architecture for scalable, high-performance enterprise applications with focus on API-first design, modernization strategy, and productivity-driven proof of concepts that improve delivery workflows.",
+    tags: [".NET 8", "Application Architecture", "API-First Design", "Scalability", "Performance"],
   },
   {
     id: 2,
@@ -104,8 +104,8 @@ export const timeline = [
     role: "Associate Architect",
     company: "KANINI",
     description:
-      "Drove scalable software architecture decisions, optimized Azure-backed services, and helped engineering teams standardize delivery workflows and technical quality across projects.",
-    tags: ["Azure", "Team Leadership", "Software Architecture", "Delivery Excellence"],
+      "Worked in a Technical Architect-equivalent role: produced architecture modules, collaborated with enterprise architects, led .NET/C# and Azure POCs, drove code quality through reviews and pair programming, and delivered Azure DevOps PR automation including reviewer assignment and PR insights reporting.",
+    tags: ["Solution Architecture", "Azure DevOps", "POC", "Code Review", "Pair Programming", "PR Insights"],
   },
   {
     id: 3,
@@ -113,8 +113,8 @@ export const timeline = [
     role: "Lead Associate",
     company: "KANINI",
     description:
-      "Built and enhanced Azure-integrated enterprise apps, collaborated in Agile ceremonies, and delivered high-impact features with Blazor and modern Microsoft stack services.",
-    tags: ["Microsoft Azure", "Blazor", "Agile", "Enterprise Apps"],
+      "Delivered Azure-integrated enterprise features through sprint planning, design discussions, coding, peer reviews, and unit testing while mentoring teammates and improving practical cloud adoption in delivery teams.",
+    tags: ["Agile Delivery", "Peer Review", "Unit Testing", "Azure Services", "Mentoring"],
   },
   {
     id: 4,
@@ -122,8 +122,8 @@ export const timeline = [
     role: "Senior Software Engineer",
     company: "KANINI",
     description:
-      "Contributed to sprint-based delivery for critical modules, with focus on .NET services, Azure Key Vault integrations, and SQL Server-backed backend implementations.",
-    tags: ["Azure Key Vault", "SQL Server", ".NET", "Sprint Delivery"],
+      "Contributed across requirement design, sprint execution, implementation, peer reviews, and testing for business-critical modules built on .NET and SQL Server with growing Azure exposure.",
+    tags: [".NET", "SQL Server", "Sprint Delivery", "Peer Review", "Testing"],
   },
   {
     id: 5,
@@ -131,8 +131,8 @@ export const timeline = [
     role: "Senior Software Engineer",
     company: "CES",
     description:
-      "Worked as part of a cross-functional team, clarified requirements during planning, and applied OOP and SOLID principles to deliver robust web-based modules.",
-    tags: ["OOP", "SOLID", "Planning", "Web Development"],
+      "Owned end-to-end module delivery in ASP.NET Web Forms, from requirement clarification and development to local/dev validation and production release support.",
+    tags: ["ASP.NET Web Forms", "OOP", "SOLID", "Release Ownership"],
   },
   {
     id: 6,
@@ -140,8 +140,8 @@ export const timeline = [
     role: "IT Analyst (Promoted from System Engineer)",
     company: "Tata Consultancy Services (TCS)",
     description:
-      "Started as System Engineer on Bank of America project: wrote unit tests, migrated Oracle to SQL Server, and implemented WCF services in ASP.NET MVC with C#. Later promoted to IT Analyst and contributed to support and reporting initiatives including SSIS/SSRS.",
-    tags: ["ASP.NET MVC", "C#", "WCF", "SQL Server", "SSIS", "SSRS"],
+      "Started as System Engineer on Bank of America project delivering unit tests, Oracle-to-SQL Server migration, and WCF services in ASP.NET MVC with C#. Promoted to IT Analyst and supported Bank of Montreal workloads across production support, monitoring, issue resolution, and SSIS/SSRS reporting.",
+    tags: ["ASP.NET MVC", "C#", "WCF", "Oracle Migration", "SQL Server", "SSIS", "SSRS", "Production Support"],
   },
   {
     id: 7,
@@ -149,8 +149,8 @@ export const timeline = [
     role: "Senior Software Engineer",
     company: "IGATE",
     description:
-      "Built web-based applications for NBCU media domain using Microsoft technologies, while integrating third-party controls such as DHTMLX and OCR (LeadTools).",
-    tags: [".NET", "SQL Server", "DHTMLX", "OCR", "Microsoft Stack"],
+      "Built media-domain web applications for NBCU using Microsoft technologies and integrated third-party components such as DHTMLX and LeadTools OCR.",
+    tags: [".NET", "C#", "SQL Server", "DHTMLX", "LeadTools OCR", "Media Domain"],
   },
 ]
 
@@ -223,31 +223,27 @@ export const certifications = [
 export const skills = [
   {
     category: "Frontend",
-    items: ["React", "JavaScript", "TypeScript", "Tailwind CSS", "HTML5", "CSS3"],
+    items: ["Blazor", "React", "JavaScript", "TypeScript", "HTML5", "CSS3", "Tailwind CSS"],
   },
   {
     category: "Backend",
-    items: ["Node.js", "Express", "C#", "ASP.NET", "Python", "PowerShell"],
+    items: [".NET Framework", ".NET Core", ".NET 8", "C#", "ASP.NET MVC", "Web API", "WCF", "LINQ", "Microservices"],
   },
   {
     category: "Cloud & DevOps",
-    items: ["Azure", "Vercel", "Streamlit", "GitHub", "CI/CD"],
+    items: ["Azure App Service", "Azure Functions", "Service Bus", "Storage", "Key Vault", "API Management", "Azure DevOps", "CI/CD", "On-Prem to Azure Migration", "Deployment Automation"],
   },
   {
     category: "Database",
-    items: ["SQL Server", "MongoDB", "Firebase", "PostgreSQL", "Supabase"],
+    items: ["SQL Server", "Oracle", "MongoDB", "SQLite", "InMemory", "SSIS", "SSRS", "Redis"],
   },
   {
     category: "ORM",
     items: ["EF Core", "Dapper"],
   },
   {
-    category: "Cloud Based Infrastructure",
-    items: ["Neon.tech", "Supabase", "Heroku", "Railway"],
-  },
-  {
     category: "Tools & Others",
-    items: ["Git", "VS Code", "Visual Studio", "Figma", "Postman", "Jira"],
+    items: ["Git", "Visual Studio", "VS Code", "Postman", "Jira", "Prompt Engineering", "Data Analysis", "Data Visualization", "Architecture Review", "Code Review", "Debugging"],
   },
   {
     category: "Interests",
