@@ -15,15 +15,44 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState('hero')
   const visibleLinks = navLinks.filter((link) =>
     link.to === 'information' ? uiFlags.showImportantInfoSection : true
   )
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
+    const onScroll = () => {
+      const y = window.scrollY
+      setScrolled(y > 40)
+
+      // Keep Contact active near the page end where exact section alignment may not be possible.
+      const atBottom = window.innerHeight + y >= document.documentElement.scrollHeight - 4
+      if (atBottom) {
+        setActiveSection(visibleLinks[visibleLinks.length - 1]?.to || 'hero')
+        return
+      }
+
+      const probeY = y + 120
+      let current = 'hero'
+
+      for (const link of visibleLinks) {
+        const section = document.getElementById(link.to)
+        if (section && probeY >= section.offsetTop) {
+          current = link.to
+        }
+      }
+
+      setActiveSection(current)
+    }
+
+    onScroll()
     window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [visibleLinks])
 
   return (
     <nav
@@ -51,9 +80,10 @@ export default function Navbar() {
                 smooth
                 duration={500}
                 offset={-70}
-                className="text-text-secondary hover:text-accent text-sm font-medium tracking-wide cursor-pointer transition-colors duration-200"
-                activeClass="!text-accent"
-                spy
+                className={`text-sm font-medium tracking-wide cursor-pointer transition-colors duration-200 ${
+                  activeSection === link.to ? 'text-accent' : 'text-text-secondary hover:text-accent'
+                }`}
+                onClick={() => setActiveSection(link.to)}
               >
                 {link.label}
               </Link>
@@ -91,8 +121,13 @@ export default function Navbar() {
               smooth
               duration={500}
               offset={-70}
-              className="text-text-secondary hover:text-accent font-medium cursor-pointer transition-colors"
-              onClick={() => setMenuOpen(false)}
+              className={`font-medium cursor-pointer transition-colors ${
+                activeSection === link.to ? 'text-accent' : 'text-text-secondary hover:text-accent'
+              }`}
+              onClick={() => {
+                setActiveSection(link.to)
+                setMenuOpen(false)
+              }}
             >
               {link.label}
             </Link>
