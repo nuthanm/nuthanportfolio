@@ -1,4 +1,5 @@
 import cors from 'cors'
+import crypto from 'crypto'
 import dotenv from 'dotenv'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
@@ -8,12 +9,14 @@ import nodemailer from 'nodemailer'
 dotenv.config()
 
 const app = express()
+app.set('trust proxy', 1)
 
 const PORT = Number(process.env.PORT || 8787)
 const ORIGIN_LIST = (process.env.FRONTEND_ORIGIN || 'http://localhost:5173')
   .split(',')
   .map((x) => x.trim())
   .filter(Boolean)
+const CAPTCHA_TOKEN_TTL_MS = Number(process.env.CAPTCHA_TOKEN_TTL_MS || 10 * 60 * 1000)
 
 const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com'
 const SMTP_PORT = Number(process.env.SMTP_PORT || 587)
@@ -64,6 +67,81 @@ app.use('/api', limiter)
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const clean = (value) => String(value || '').trim()
 const cleanSingleLine = (value) => clean(value).replace(/[\r\n]+/g, ' ')
+
+function getCaptchaSecret() {
+  return process.env.CONTACT_CAPTCHA_SECRET || `${SMTP_USER}:${SMTP_PASS}`
+}
+
+function signCaptchaPayload(payload) {
+  return crypto.createHmac('sha256', getCaptchaSecret()).update(payload).digest('hex')
+}
+
+function createCaptchaChallenge() {
+  const a = Math.floor(Math.random() * 8) + 2
+  const b = Math.floor(Math.random() * 8) + 2
+  const issuedAt = Date.now()
+  const nonce = crypto.randomBytes(8).toString('hex')
+  const payload = `${a}:${b}:${issuedAt}:${nonce}`
+  const signature = signCaptchaPayload(payload)
+  const token = Buffer.from(`${payload}:${signature}`).toString('base64url')
+
+  return {
+    challenge: `${a} + ${b}`,
+    token,
+  }
+}
+
+function decodeCaptchaToken(token) {
+  try {
+    const raw = Buffer.from(String(token), 'base64url').toString('utf8')
+    const [a, b, issuedAt, nonce, signature] = raw.split(':')
+    if (!a || !b || !issuedAt || !nonce || !signature) {
+      return null
+    }
+
+    const payload = `${a}:${b}:${issuedAt}:${nonce}`
+    const expected = signCaptchaPayload(payload)
+    if (signature.length !== expected.length) {
+      return null
+    }
+
+    const isValidSignature = crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
+    if (!isValidSignature) {
+      return null
+    }
+
+    const aNum = Number(a)
+    const bNum = Number(b)
+    const issuedNum = Number(issuedAt)
+
+    if (!Number.isInteger(aNum) || !Number.isInteger(bNum) || !Number.isFinite(issuedNum)) {
+      return null
+    }
+
+    if (Date.now() - issuedNum > CAPTCHA_TOKEN_TTL_MS) {
+      return null
+    }
+
+    return { a: aNum, b: bNum }
+  } catch (_error) {
+    return null
+  }
+}
+
+function isAllowedRequestSource(req) {
+  const origin = cleanSingleLine(req.headers.origin)
+  const referer = cleanSingleLine(req.headers.referer)
+
+  if (origin && ORIGIN_LIST.includes(origin)) {
+    return true
+  }
+
+  if (referer) {
+    return ORIGIN_LIST.some((allowed) => referer === allowed || referer.startsWith(`${allowed}/`))
+  }
+
+  return false
+}
 
 function escapeHtml(value) {
   return String(value)
@@ -148,8 +226,24 @@ app.get('/api/health', (_req, res) => {
   res.json({ ok: true })
 })
 
+app.get('/api/contact-captcha', (req, res) => {
+  if (!isAllowedRequestSource(req)) {
+    res.status(403).json({ ok: false, error: 'Origin not allowed.' })
+    return
+  }
+
+  const challenge = createCaptchaChallenge()
+  res.setHeader('Cache-Control', 'no-store')
+  res.json({ ok: true, ...challenge })
+})
+
 app.post('/api/contact', async (req, res) => {
   try {
+    if (!isAllowedRequestSource(req)) {
+      res.status(403).json({ ok: false, error: 'Origin not allowed.' })
+      return
+    }
+
     if (!SMTP_USER || !SMTP_PASS || !MAIL_TO) {
       res.status(500).json({ ok: false, error: 'Mail server is not configured.' })
       return
@@ -160,10 +254,10 @@ app.post('/api/contact', async (req, res) => {
     const subject = cleanSingleLine(req.body.subject)
     const message = clean(req.body.message)
     const website = clean(req.body.website)
+    const consent = req.body.consent === true
 
-    const captchaA = Number(req.body.captchaA)
-    const captchaB = Number(req.body.captchaB)
     const captchaAnswer = Number(req.body.captchaAnswer)
+    const captchaToken = cleanSingleLine(req.body.captchaToken)
 
     if (website) {
       res.json({ ok: true })
@@ -172,6 +266,11 @@ app.post('/api/contact', async (req, res) => {
 
     if (!name || !email || !subject || !message) {
       res.status(400).json({ ok: false, error: 'Missing required fields.' })
+      return
+    }
+
+    if (!consent) {
+      res.status(400).json({ ok: false, error: 'Consent is required.' })
       return
     }
 
@@ -185,12 +284,13 @@ app.post('/api/contact', async (req, res) => {
       return
     }
 
-    if (!Number.isFinite(captchaA) || !Number.isFinite(captchaB) || !Number.isFinite(captchaAnswer)) {
+    if (!captchaToken || !Number.isFinite(captchaAnswer)) {
       res.status(400).json({ ok: false, error: 'Invalid captcha payload.' })
       return
     }
 
-    if (captchaA + captchaB !== captchaAnswer) {
+    const captcha = decodeCaptchaToken(captchaToken)
+    if (!captcha || captcha.a + captcha.b !== captchaAnswer) {
       res.status(400).json({ ok: false, error: 'Captcha verification failed.' })
       return
     }

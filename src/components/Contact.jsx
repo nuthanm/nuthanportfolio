@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { FiDownload, FiSend, FiMail, FiPhone, FiMapPin, FiRefreshCw } from 'react-icons/fi'
 import { FaGithub, FaLinkedin, FaMedium } from 'react-icons/fa'
@@ -36,17 +36,51 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [errors, setErrors] = useState({})
-  const [captchaA, setCaptchaA] = useState(() => Math.floor(Math.random() * 8) + 2)
-  const [captchaB, setCaptchaB] = useState(() => Math.floor(Math.random() * 8) + 2)
+  const [captchaChallenge, setCaptchaChallenge] = useState('')
+  const [captchaToken, setCaptchaToken] = useState('')
   const [captchaInput, setCaptchaInput] = useState('')
+  const [consentChecked, setConsentChecked] = useState(false)
 
   const formsEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT || '/api/contact'
+  const configuredCaptchaEndpoint = import.meta.env.VITE_CONTACT_CAPTCHA_ENDPOINT
+  const captchaEndpoint = configuredCaptchaEndpoint
+    || (formsEndpoint.includes('/contact')
+      ? formsEndpoint.replace('/contact', '/contact-captcha')
+      : '/api/contact-captcha')
 
-  const regenerateCaptcha = () => {
-    setCaptchaA(Math.floor(Math.random() * 8) + 2)
-    setCaptchaB(Math.floor(Math.random() * 8) + 2)
-    setCaptchaInput('')
+  const regenerateCaptcha = async () => {
+    try {
+      const response = await fetch(captchaEndpoint, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      })
+
+      if (!response.ok) {
+        throw new Error('Unable to load captcha challenge.')
+      }
+
+      const data = await response.json()
+      if (!data?.ok || !data?.challenge || !data?.token) {
+        throw new Error('Captcha challenge is invalid.')
+      }
+
+      setCaptchaChallenge(String(data.challenge))
+      setCaptchaToken(String(data.token))
+      setCaptchaInput('')
+      setErrors((prev) => ({ ...prev, captcha: '' }))
+    } catch (_error) {
+      setCaptchaChallenge('Unavailable')
+      setCaptchaToken('')
+      setErrors((prev) => ({
+        ...prev,
+        captcha: 'Captcha is unavailable right now. Please refresh and try again.',
+      }))
+    }
   }
+
+  useEffect(() => {
+    regenerateCaptcha()
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -65,12 +99,15 @@ export default function Contact() {
     }
     if (!form.subject.trim()) nextErrors.subject = 'Subject is required.'
     if (!form.message.trim()) nextErrors.message = 'Message is required.'
+    if (!consentChecked) nextErrors.consent = 'Please accept Privacy Policy and Terms.'
     if (!captchaInput.trim()) {
       nextErrors.captcha = 'Captcha answer is required.'
+    } else if (!captchaToken) {
+      nextErrors.captcha = 'Captcha token is missing. Please refresh captcha.'
     } else {
       const captchaValue = Number(captchaInput)
-      if (!Number.isFinite(captchaValue) || captchaValue !== captchaA + captchaB) {
-        nextErrors.captcha = 'Captcha verification failed. Please solve again.'
+      if (!Number.isFinite(captchaValue)) {
+        nextErrors.captcha = 'Captcha answer must be a number.'
       }
     }
 
@@ -92,6 +129,7 @@ export default function Contact() {
     if (form.website.trim()) {
       setSubmitted(true)
       setForm({ name: '', email: '', subject: '', message: '', website: '' })
+      setConsentChecked(false)
       regenerateCaptcha()
       return
     }
@@ -102,9 +140,9 @@ export default function Contact() {
       if (formsEndpoint) {
         const payload = {
           ...form,
-          captchaA,
-          captchaB,
+          captchaToken,
           captchaAnswer: Number(captchaInput),
+          consent: consentChecked,
         }
 
         const response = await fetch(formsEndpoint, {
@@ -140,6 +178,7 @@ export default function Contact() {
 
       setSubmitted(true)
       setForm({ name: '', email: '', subject: '', message: '', website: '' })
+      setConsentChecked(false)
       regenerateCaptcha()
     } catch (error) {
       const message =
@@ -368,7 +407,7 @@ export default function Contact() {
                   </label>
                   <div className="mt-2 flex items-center gap-3">
                     <div className="text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-md px-3 py-2">
-                      {captchaA} + {captchaB} = ?
+                      {captchaChallenge || 'Loading...'} = ?
                     </div>
                     <input
                       id="captcha"
@@ -395,6 +434,32 @@ export default function Contact() {
                     </button>
                   </div>
                   {errors.captcha && <p className="text-xs text-red-600 mt-2">{errors.captcha}</p>}
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <label className="flex items-start gap-2 text-xs text-slate-700" htmlFor="consent">
+                    <input
+                      id="consent"
+                      type="checkbox"
+                      checked={consentChecked}
+                      onChange={(e) => {
+                        setConsentChecked(e.target.checked)
+                        setErrors((prev) => ({ ...prev, consent: '' }))
+                      }}
+                      className="mt-0.5 h-4 w-4 rounded border-slate-300 text-accent focus:ring-accent/40"
+                    />
+                    <span>
+                      I agree to the{' '}
+                      <a href="#/privacy-policy" className="text-accent hover:underline">
+                        Privacy Policy
+                      </a>{' '}
+                      and{' '}
+                      <a href="#/terms-and-conditions" className="text-accent hover:underline">
+                        Terms and Conditions
+                      </a>
+                      .
+                    </span>
+                  </label>
+                  {errors.consent && <p className="text-xs text-red-600 mt-2">{errors.consent}</p>}
                 </div>
                 <button
                   type="submit"

@@ -1,8 +1,59 @@
+import crypto from 'crypto'
 import nodemailer from 'nodemailer'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const clean = (value) => String(value || '').trim()
 const cleanSingleLine = (value) => clean(value).replace(/[\r\n]+/g, ' ')
+const ORIGIN_LIST = (process.env.FRONTEND_ORIGIN || 'http://localhost:5173')
+  .split(',')
+  .map((x) => x.trim())
+  .filter(Boolean)
+const CAPTCHA_TOKEN_TTL_MS = Number(process.env.CAPTCHA_TOKEN_TTL_MS || 10 * 60 * 1000)
+
+function getCaptchaSecret() {
+  return process.env.CONTACT_CAPTCHA_SECRET || `${process.env.SMTP_USER || ''}:${process.env.SMTP_PASS || ''}`
+}
+
+function signCaptchaPayload(payload) {
+  return crypto.createHmac('sha256', getCaptchaSecret()).update(payload).digest('hex')
+}
+
+function decodeCaptchaToken(token) {
+  try {
+    const raw = Buffer.from(String(token), 'base64url').toString('utf8')
+    const [a, b, issuedAt, nonce, signature] = raw.split(':')
+    if (!a || !b || !issuedAt || !nonce || !signature) {
+      return null
+    }
+
+    const payload = `${a}:${b}:${issuedAt}:${nonce}`
+    const expected = signCaptchaPayload(payload)
+    if (signature.length !== expected.length) {
+      return null
+    }
+
+    const isValidSignature = crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
+    if (!isValidSignature) {
+      return null
+    }
+
+    const aNum = Number(a)
+    const bNum = Number(b)
+    const issuedNum = Number(issuedAt)
+
+    if (!Number.isInteger(aNum) || !Number.isInteger(bNum) || !Number.isFinite(issuedNum)) {
+      return null
+    }
+
+    if (Date.now() - issuedNum > CAPTCHA_TOKEN_TTL_MS) {
+      return null
+    }
+
+    return { a: aNum, b: bNum }
+  } catch (_error) {
+    return null
+  }
+}
 
 function escapeHtml(value) {
   return String(value)
@@ -91,6 +142,21 @@ function getClientIp(req) {
   return req.socket?.remoteAddress || 'unknown'
 }
 
+function isAllowedRequestSource(req) {
+  const origin = cleanSingleLine(req.headers.origin)
+  const referer = cleanSingleLine(req.headers.referer)
+
+  if (origin && ORIGIN_LIST.includes(origin)) {
+    return true
+  }
+
+  if (referer) {
+    return ORIGIN_LIST.some((allowed) => referer === allowed || referer.startsWith(`${allowed}/`))
+  }
+
+  return false
+}
+
 function checkRateLimit(req) {
   const windowMs = Number(process.env.RATE_LIMIT_WINDOW_MS || 10 * 60 * 1000)
   const max = Number(process.env.RATE_LIMIT_MAX || 10)
@@ -124,6 +190,11 @@ export default async function handler(req, res) {
   }
 
   try {
+    if (!isAllowedRequestSource(req)) {
+      res.status(403).json({ ok: false, error: 'Origin not allowed.' })
+      return
+    }
+
     const rate = checkRateLimit(req)
     if (rate.blocked) {
       res.status(429).json({ ok: false, error: 'Too many requests. Please try later.' })
@@ -148,10 +219,10 @@ export default async function handler(req, res) {
     const subject = cleanSingleLine(req.body?.subject)
     const message = clean(req.body?.message)
     const website = clean(req.body?.website)
+    const consent = req.body?.consent === true
 
-    const captchaA = Number(req.body?.captchaA)
-    const captchaB = Number(req.body?.captchaB)
     const captchaAnswer = Number(req.body?.captchaAnswer)
+    const captchaToken = cleanSingleLine(req.body?.captchaToken)
 
     if (website) {
       res.status(200).json({ ok: true })
@@ -160,6 +231,11 @@ export default async function handler(req, res) {
 
     if (!name || !email || !subject || !message) {
       res.status(400).json({ ok: false, error: 'Missing required fields.' })
+      return
+    }
+
+    if (!consent) {
+      res.status(400).json({ ok: false, error: 'Consent is required.' })
       return
     }
 
@@ -173,12 +249,13 @@ export default async function handler(req, res) {
       return
     }
 
-    if (!Number.isFinite(captchaA) || !Number.isFinite(captchaB) || !Number.isFinite(captchaAnswer)) {
+    if (!captchaToken || !Number.isFinite(captchaAnswer)) {
       res.status(400).json({ ok: false, error: 'Invalid captcha payload.' })
       return
     }
 
-    if (captchaA + captchaB !== captchaAnswer) {
+    const captcha = decodeCaptchaToken(captchaToken)
+    if (!captcha || captcha.a + captcha.b !== captchaAnswer) {
       res.status(400).json({ ok: false, error: 'Captcha verification failed.' })
       return
     }

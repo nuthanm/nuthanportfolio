@@ -92,6 +92,14 @@ export default function Footer() {
           </p>
           <p className="text-muted text-xs">© {year} All rights reserved.</p>
         </div>
+        <div className="mt-3 flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-slate-500">
+          <a href="#/privacy-policy" className="hover:text-accent transition-colors">
+            Privacy Policy
+          </a>
+          <a href="#/terms-and-conditions" className="hover:text-accent transition-colors">
+            Terms and Conditions
+          </a>
+        </div>
         <div className="mt-4 text-[11px] leading-relaxed text-slate-500 text-center sm:text-left">
           Trademarked names, logos, and brands belong to their respective owners. Referenced here for portfolio demonstration and identification only.
         </div>
