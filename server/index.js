@@ -187,16 +187,23 @@ function sumContributionCounts(svgText) {
   }, 0)
 }
 
-async function fetchContributionsSoFar(username, fromDateText) {
-  const now = new Date()
-  const from = new Date(fromDateText)
-
-  if (Number.isNaN(from.getTime())) {
-    throw new Error('Invalid GitHub account creation date.')
+function parseContributionTotalFromHtml(htmlText) {
+  const match = htmlText.match(/([\d,]+)\s+contributions\s+in\s+\d{4}/i)
+  if (!match) {
+    return 0
   }
 
-  const fromText = from.toISOString().slice(0, 10)
-  const toText = now.toISOString().slice(0, 10)
+  const count = Number(String(match[1]).replace(/,/g, ''))
+  return Number.isFinite(count) ? count : 0
+}
+
+async function fetchContributionsForYear(username, year) {
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  const isCurrentYear = year === currentYear
+
+  const fromText = `${year}-01-01`
+  const toText = isCurrentYear ? now.toISOString().slice(0, 10) : `${year}-12-31`
 
   const response = await fetch(
     `https://github.com/users/${encodeURIComponent(username)}/contributions?from=${fromText}&to=${toText}`,
@@ -212,33 +219,36 @@ async function fetchContributionsSoFar(username, fromDateText) {
     throw new Error('Unable to fetch GitHub contribution graph.')
   }
 
-  const svgText = await response.text()
-  return sumContributionCounts(svgText)
+  const htmlText = await response.text()
+  const fromDataCount = sumContributionCounts(htmlText)
+  if (fromDataCount > 0) {
+    return fromDataCount
+  }
+
+  return parseContributionTotalFromHtml(htmlText)
+}
+
+async function fetchContributionsSoFar(username, fromDateText) {
+  const from = new Date(fromDateText)
+
+  if (Number.isNaN(from.getTime())) {
+    throw new Error('Invalid GitHub account creation date.')
+  }
+
+  const now = new Date()
+  const startYear = from.getFullYear()
+  const endYear = now.getFullYear()
+
+  let total = 0
+  for (let year = startYear; year <= endYear; year += 1) {
+    total += await fetchContributionsForYear(username, year)
+  }
+
+  return total
 }
 
 async function fetchContributionsCurrentYear(username) {
-  const now = new Date()
-  const startOfYear = new Date(now.getFullYear(), 0, 1)
-
-  const fromText = startOfYear.toISOString().slice(0, 10)
-  const toText = now.toISOString().slice(0, 10)
-
-  const response = await fetch(
-    `https://github.com/users/${encodeURIComponent(username)}/contributions?from=${fromText}&to=${toText}`,
-    {
-      headers: {
-        Accept: 'image/svg+xml,text/plain,*/*',
-        'User-Agent': 'nuthan-portfolio',
-      },
-    }
-  )
-
-  if (!response.ok) {
-    throw new Error('Unable to fetch GitHub current-year contributions.')
-  }
-
-  const svgText = await response.text()
-  return sumContributionCounts(svgText)
+  return fetchContributionsForYear(username, new Date().getFullYear())
 }
 
 function escapeHtml(value) {
