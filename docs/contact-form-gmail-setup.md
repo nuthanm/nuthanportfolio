@@ -63,7 +63,7 @@ For Vercel deployment (single project):
    - `SMTP_FROM=<display-from-value>`
    - `MAIL_TO=<receiver-gmail>`
    - `CONTACT_CAPTCHA_SECRET=<long-random-secret>`
-   - `FRONTEND_ORIGIN=<comma-separated-allowed-origins>`
+   - `FRONTEND_ORIGIN=<comma-separated-allowed-origins>` (recommended: your production domain and any preview domain you trust)
    - `CAPTCHA_TOKEN_TTL_MS=600000`
    - `RATE_LIMIT_WINDOW_MS=600000`
    - `RATE_LIMIT_MAX=10`
@@ -86,6 +86,6 @@ For Vercel deployment (single project):
 3. Backend protection includes:
    - rate limiting (`RATE_LIMIT_WINDOW_MS`, `RATE_LIMIT_MAX`)
    - server-side captcha and honeypot checks
-   - origin and referer validation using `FRONTEND_ORIGIN`
+   - origin and referer validation using `FRONTEND_ORIGIN` plus same-host allowance for deployed serverless requests
    - strict input length and email format validation
 4. Always keep `.env` out of source control and use Gmail App Passwords only.

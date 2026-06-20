@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer'
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const clean = (value) => String(value || '').trim()
 const cleanSingleLine = (value) => clean(value).replace(/[\r\n]+/g, ' ')
-const ORIGIN_LIST = (process.env.FRONTEND_ORIGIN || 'http://localhost:5173')
+const ORIGIN_LIST = (process.env.FRONTEND_ORIGIN || '')
   .split(',')
   .map((x) => x.trim())
   .filter(Boolean)
@@ -142,16 +142,58 @@ function getClientIp(req) {
   return req.socket?.remoteAddress || 'unknown'
 }
 
-function isAllowedRequestSource(req) {
-  const origin = cleanSingleLine(req.headers.origin)
-  const referer = cleanSingleLine(req.headers.referer)
+function toOrigin(value) {
+  const text = cleanSingleLine(value)
+  if (!text) {
+    return ''
+  }
 
-  if (origin && ORIGIN_LIST.includes(origin)) {
+  try {
+    return new URL(text).origin
+  } catch (_error) {
+    return ''
+  }
+}
+
+function getRequestOrigin(req) {
+  const host = cleanSingleLine(req.headers['x-forwarded-host'] || req.headers.host)
+  if (!host) {
+    return ''
+  }
+
+  const proto = cleanSingleLine(req.headers['x-forwarded-proto'] || 'https')
+  return `${proto}://${host}`
+}
+
+function getAllowedOrigins(req) {
+  const allowed = new Set(ORIGIN_LIST.map((value) => toOrigin(value)).filter(Boolean))
+  const requestOrigin = getRequestOrigin(req)
+  if (requestOrigin) {
+    allowed.add(requestOrigin)
+  }
+
+  const vercelUrl = cleanSingleLine(process.env.VERCEL_URL)
+  if (vercelUrl) {
+    const vercelOrigin = toOrigin(`https://${vercelUrl}`)
+    if (vercelOrigin) {
+      allowed.add(vercelOrigin)
+    }
+  }
+
+  return allowed
+}
+
+function isAllowedRequestSource(req) {
+  const allowedOrigins = getAllowedOrigins(req)
+  const origin = toOrigin(req.headers.origin)
+  const refererOrigin = toOrigin(req.headers.referer)
+
+  if (origin && allowedOrigins.has(origin)) {
     return true
   }
 
-  if (referer) {
-    return ORIGIN_LIST.some((allowed) => referer === allowed || referer.startsWith(`${allowed}/`))
+  if (refererOrigin && allowedOrigins.has(refererOrigin)) {
+    return true
   }
 
   return false

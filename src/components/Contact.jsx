@@ -41,7 +41,10 @@ export default function Contact() {
   const [captchaInput, setCaptchaInput] = useState('')
   const [consentChecked, setConsentChecked] = useState(false)
 
-  const formsEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT || '/api/contact'
+  const configuredFormsEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT || '/api/contact'
+  const isNonLocalhostPage = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+  const usesLocalhostApi = configuredFormsEndpoint.includes('localhost') || configuredFormsEndpoint.includes('127.0.0.1')
+  const formsEndpoint = isNonLocalhostPage && usesLocalhostApi ? '/api/contact' : configuredFormsEndpoint
   const configuredCaptchaEndpoint = import.meta.env.VITE_CONTACT_CAPTCHA_ENDPOINT
   const captchaEndpoint = configuredCaptchaEndpoint
     || (formsEndpoint.includes('/contact')
