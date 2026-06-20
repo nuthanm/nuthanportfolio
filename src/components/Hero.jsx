@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-scroll'
 import { FiArrowDown, FiGithub, FiLinkedin, FiMail, FiTwitter } from 'react-icons/fi'
@@ -35,7 +36,122 @@ const particles = [
   { id: 10, size: 7, x: '90%', y: '28%', delay: 0.7, duration: 10 },
 ]
 
+function parseGithubUsername(value) {
+  if (!value) return ''
+  const trimmed = String(value).trim()
+
+  if (!trimmed.includes('http')) {
+    return trimmed.replace(/^@/, '')
+  }
+
+  try {
+    const url = new URL(trimmed)
+    const parts = url.pathname.split('/').filter(Boolean)
+    return (parts[0] || '').replace(/^@/, '')
+  } catch (_error) {
+    return ''
+  }
+}
+
+function getCompletedYears(startDateText) {
+  const startDate = new Date(startDateText)
+  if (Number.isNaN(startDate.getTime())) {
+    return 0
+  }
+
+  const now = new Date()
+  let years = now.getFullYear() - startDate.getFullYear()
+  const monthDelta = now.getMonth() - startDate.getMonth()
+
+  if (monthDelta < 0 || (monthDelta === 0 && now.getDate() < startDate.getDate())) {
+    years -= 1
+  }
+
+  return Math.max(0, years)
+}
+
 export default function Hero() {
+  const [liveGitHubStats, setLiveGitHubStats] = useState(null)
+
+  const contactEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT || '/api/contact'
+  const configuredStatsEndpoint = import.meta.env.VITE_GITHUB_STATS_ENDPOINT
+  const githubStatsEndpoint = configuredStatsEndpoint
+    || (contactEndpoint.includes('/contact')
+      ? contactEndpoint.replace('/contact', '/github-stats')
+      : '/api/github-stats')
+
+  const githubUsername = useMemo(() => parseGithubUsername(personalInfo.social?.github), [])
+  const completedYears = useMemo(
+    () => getCompletedYears(personalInfo.itCareerStartDate || '2013-12-01'),
+    []
+  )
+
+  const resolvedBio = useMemo(() => {
+    return String(personalInfo.bio || '').replace('{yearsExperience}', String(completedYears))
+  }, [completedYears])
+
+  const resolvedStats = useMemo(() => {
+    return githubStats.map((stat) => {
+      if (stat.label === 'Public Repositories' && liveGitHubStats?.publicRepos != null) {
+        return { ...stat, value: `${liveGitHubStats.publicRepos}` }
+      }
+
+      if (stat.label === 'Contributions (Current Year)' && liveGitHubStats?.contributionsCurrentYear != null) {
+        return { ...stat, value: `${liveGitHubStats.contributionsCurrentYear}` }
+      }
+
+      if (stat.label === 'Contributions (So Far)' && liveGitHubStats?.contributionsSoFar != null) {
+        return { ...stat, value: `${liveGitHubStats.contributionsSoFar}` }
+      }
+
+      if (stat.label === 'Years of IT Experience') {
+        return { ...stat, value: `${completedYears}+` }
+      }
+
+      return stat
+    })
+  }, [completedYears, liveGitHubStats])
+
+  useEffect(() => {
+    if (!githubUsername) {
+      return
+    }
+
+    let isDisposed = false
+
+    const loadStats = async () => {
+      try {
+        const endpoint = `${githubStatsEndpoint}?username=${encodeURIComponent(githubUsername)}`
+        const response = await fetch(endpoint, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+        })
+
+        if (!response.ok) {
+          return
+        }
+
+        const data = await response.json()
+        if (!data?.ok || isDisposed) {
+          return
+        }
+
+        setLiveGitHubStats({
+          publicRepos: Number(data.publicRepos || 0),
+          contributionsCurrentYear: Number(data.contributionsCurrentYear || 0),
+          contributionsSoFar: Number(data.contributionsSoFar || 0),
+        })
+      } catch (_error) {
+        // Keep fallback static stats when external API is unavailable.
+      }
+    }
+
+    loadStats()
+    return () => {
+      isDisposed = true
+    }
+  }, [githubStatsEndpoint, githubUsername])
+
   return (
     <section
       id="hero"
@@ -115,7 +231,7 @@ export default function Hero() {
             transition={{ delay: 0.5, duration: 0.6 }}
             className="text-text-secondary text-base leading-relaxed max-w-2xl"
           >
-            {personalInfo.bio}
+            {resolvedBio}
           </motion.p>
 
           <motion.div
@@ -124,7 +240,7 @@ export default function Hero() {
             transition={{ delay: 0.55, duration: 0.6 }}
             className="grid grid-cols-2 gap-3 max-w-2xl"
           >
-            {githubStats.map((stat) => (
+            {resolvedStats.map((stat) => (
               <div key={stat.label} className="glass-card p-4 bg-white/90">
                 <p className="text-2xl font-extrabold text-accent">{stat.value}</p>
                 <p className="text-xs text-text-secondary mt-1">{stat.label}</p>

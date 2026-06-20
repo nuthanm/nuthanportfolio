@@ -143,6 +143,104 @@ function isAllowedRequestSource(req) {
   return false
 }
 
+function parseGithubUsername(value) {
+  if (!value) return ''
+  const trimmed = String(value).trim()
+
+  if (!trimmed.includes('http')) {
+    return trimmed.replace(/^@/, '')
+  }
+
+  try {
+    const url = new URL(trimmed)
+    const parts = url.pathname.split('/').filter(Boolean)
+    return (parts[0] || '').replace(/^@/, '')
+  } catch (_error) {
+    return ''
+  }
+}
+
+async function fetchGitHubUserStats(username) {
+  const response = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`, {
+    headers: {
+      Accept: 'application/vnd.github+json',
+      'User-Agent': 'nuthan-portfolio',
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Unable to fetch GitHub user profile.')
+  }
+
+  const data = await response.json()
+  return {
+    publicRepos: Number(data.public_repos || 0),
+    createdAt: String(data.created_at || ''),
+  }
+}
+
+function sumContributionCounts(svgText) {
+  const matches = svgText.match(/data-count="(\d+)"/g) || []
+  return matches.reduce((sum, item) => {
+    const count = Number(item.replace(/[^\d]/g, ''))
+    return Number.isFinite(count) ? sum + count : sum
+  }, 0)
+}
+
+async function fetchContributionsSoFar(username, fromDateText) {
+  const now = new Date()
+  const from = new Date(fromDateText)
+
+  if (Number.isNaN(from.getTime())) {
+    throw new Error('Invalid GitHub account creation date.')
+  }
+
+  const fromText = from.toISOString().slice(0, 10)
+  const toText = now.toISOString().slice(0, 10)
+
+  const response = await fetch(
+    `https://github.com/users/${encodeURIComponent(username)}/contributions?from=${fromText}&to=${toText}`,
+    {
+      headers: {
+        Accept: 'image/svg+xml,text/plain,*/*',
+        'User-Agent': 'nuthan-portfolio',
+      },
+    }
+  )
+
+  if (!response.ok) {
+    throw new Error('Unable to fetch GitHub contribution graph.')
+  }
+
+  const svgText = await response.text()
+  return sumContributionCounts(svgText)
+}
+
+async function fetchContributionsCurrentYear(username) {
+  const now = new Date()
+  const startOfYear = new Date(now.getFullYear(), 0, 1)
+
+  const fromText = startOfYear.toISOString().slice(0, 10)
+  const toText = now.toISOString().slice(0, 10)
+
+  const response = await fetch(
+    `https://github.com/users/${encodeURIComponent(username)}/contributions?from=${fromText}&to=${toText}`,
+    {
+      headers: {
+        Accept: 'image/svg+xml,text/plain,*/*',
+        'User-Agent': 'nuthan-portfolio',
+      },
+    }
+  )
+
+  if (!response.ok) {
+    throw new Error('Unable to fetch GitHub current-year contributions.')
+  }
+
+  const svgText = await response.text()
+  return sumContributionCounts(svgText)
+}
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -224,6 +322,35 @@ function renderMailHtml({ name, email, subject, message }) {
 
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true })
+})
+
+app.get('/api/github-stats', async (req, res) => {
+  try {
+    const username = parseGithubUsername(req.query?.username)
+    if (!username) {
+      res.status(400).json({ ok: false, error: 'GitHub username is required.' })
+      return
+    }
+
+    const userStats = await fetchGitHubUserStats(username)
+    const [contributionsCurrentYear, contributionsSoFar] = await Promise.all([
+      fetchContributionsCurrentYear(username),
+      fetchContributionsSoFar(username, userStats.createdAt),
+    ])
+
+    res.setHeader('Cache-Control', 'public, max-age=1800')
+    res.json({
+      ok: true,
+      username,
+      publicRepos: userStats.publicRepos,
+      contributionsCurrentYear,
+      contributionsSoFar,
+      updatedAt: new Date().toISOString(),
+    })
+  } catch (error) {
+    console.error('GitHub stats endpoint error:', error)
+    res.status(500).json({ ok: false, error: 'Unable to fetch GitHub stats right now.' })
+  }
 })
 
 app.get('/api/contact-captcha', (req, res) => {

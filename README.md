@@ -15,11 +15,13 @@
 | Section | Description |
 |---|---|
 | **Hero** | Introduction, tagline, social links, and resume download |
+| **Live GitHub Metrics** | Auto-updated public repos and contribution stats (current year + so far) |
 | **AI Tools Strip** | Transparent showcase of AI copilots used during development |
 | **Career Timeline** | Full professional history from 2013 to present |
 | **Skills** | Categorised tech stack across Frontend, Backend, Cloud, Databases, and more |
 | **Portfolio** | Live project cards with preview thumbnails |
 | **Contact** | Secure contact form with anti-spam, honeypot, captcha, and Gmail SMTP delivery |
+| **Privacy & Terms** | Built-in Privacy Policy and Terms & Conditions pages |
 | **Footer** | Attribution, copyright, and social links |
 
 ---
@@ -60,6 +62,8 @@
 nuthanportfolio/
 ├── api/                        # Vercel serverless API functions
 │   ├── contact.js              # Contact form handler (email via Gmail SMTP)
+│   ├── contact-captcha.js      # Signed captcha challenge generator
+│   ├── github-stats.js         # GitHub metrics endpoint for hero cards
 │   └── health.js               # Health check endpoint
 ├── docs/                       # Developer guides
 │   ├── contact-form-gmail-setup.md
@@ -79,7 +83,9 @@ nuthanportfolio/
 │   │   ├── ImportantInfo.jsx
 │   │   ├── Navbar.jsx
 │   │   ├── Portfolio.jsx
+│   │   ├── PrivacyPolicyPage.jsx
 │   │   ├── Skills.jsx
+│   │   ├── TermsAndConditionsPage.jsx
 │   │   └── Timeline.jsx
 │   ├── data.js                 # ⭐ All portfolio content lives here
 │   ├── App.jsx
@@ -125,6 +131,8 @@ Edit `.env` and fill in your Gmail SMTP credentials:
 
 ```env
 VITE_CONTACT_ENDPOINT=/api/contact
+VITE_CONTACT_CAPTCHA_ENDPOINT=/api/contact-captcha
+VITE_GITHUB_STATS_ENDPOINT=/api/github-stats
 
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
@@ -133,6 +141,9 @@ SMTP_USER=yourgmail@gmail.com
 SMTP_PASS=your_gmail_app_password
 SMTP_FROM="Your Name <yourgmail@gmail.com>"
 MAIL_TO=yourgmail@gmail.com
+CONTACT_CAPTCHA_SECRET=replace_with_a_long_random_secret
+CAPTCHA_TOKEN_TTL_MS=600000
+FRONTEND_ORIGIN=http://localhost:5173
 
 RATE_LIMIT_WINDOW_MS=600000
 RATE_LIMIT_MAX=10
@@ -182,6 +193,9 @@ npm run preview
    | `SMTP_PASS` | your Gmail App Password |
    | `SMTP_FROM` | display name + email |
    | `MAIL_TO` | receiver Gmail address |
+   | `CONTACT_CAPTCHA_SECRET` | long random secret value |
+   | `CAPTCHA_TOKEN_TTL_MS` | `600000` |
+   | `FRONTEND_ORIGIN` | your frontend origin(s), comma-separated |
    | `RATE_LIMIT_WINDOW_MS` | `600000` |
    | `RATE_LIMIT_MAX` | `10` |
 
@@ -191,10 +205,12 @@ npm run preview
 
 ## 🔒 Security
 
-- **Rate limiting** — contact form limited to 10 requests per 10 minutes per IP.
+- **Rate limiting** — contact form limited to configured requests per time window.
 - **Honeypot field** — hidden field traps bots silently.
-- **Captcha challenge** — simple human verification required before submit.
+- **Signed captcha token** — server-generated captcha challenge with tamper-resistant token.
+- **Consent gating** — users must accept Privacy Policy and Terms before submit.
 - **Server-side validation** — strict length and email format checks on every request.
+- **Origin/Referer checks** — requests are validated against configured frontend origin(s).
 - **Helmet** — HTTP security headers applied on the Express backend.
 - **CORS** — restricted to the configured `FRONTEND_ORIGIN`.
 - **Environment secrets** — all sensitive values are stored in `.env` (never committed).

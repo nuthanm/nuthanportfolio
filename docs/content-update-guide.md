@@ -69,11 +69,22 @@ Tip: For stable thumbnails, store local images in public/thumbnails and use /thu
 ## 5) Contact Form Behavior
 1. Frontend form is in src/components/Contact.jsx
 2. Direct submit endpoint environment variable is VITE_CONTACT_ENDPOINT
-3. If endpoint is not set, form opens the default mail client (mailto fallback)
-4. Captcha challenge is required before submit
-5. Setup details are in docs/contact-form-gmail-setup.md
+3. Captcha endpoint can be configured with VITE_CONTACT_CAPTCHA_ENDPOINT (or auto-derived)
+4. If endpoint is not set, form opens the default mail client (mailto fallback)
+5. Signed captcha challenge and consent are required before submit
+6. Setup details are in docs/contact-form-gmail-setup.md
 
-## 6) After Any Content Change
+## 6) Hero Stats and Experience Automation
+1. Hero cards are rendered in src/components/Hero.jsx
+2. Live GitHub stats endpoint is /api/github-stats (or VITE_GITHUB_STATS_ENDPOINT)
+3. Stats include:
+   - Public Repositories
+   - Contributions (Current Year)
+   - Contributions (So Far)
+4. Years of IT Experience is auto-calculated from personalInfo.itCareerStartDate in src/data.js
+5. Keep personalInfo.itCareerStartDate as your true career start date (currently Dec 2013)
+
+## 7) After Any Content Change
 Run:
 npm run build
 
