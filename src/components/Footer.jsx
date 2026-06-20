@@ -86,22 +86,21 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-slate-200 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-muted text-xs flex items-center gap-1.5">
+        <div className="border-t border-slate-200 pt-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <p className="text-muted text-xs flex items-center gap-1.5 justify-center lg:justify-start">
             Made with <FiHeart size={12} className="text-accent" /> by {personalInfo.name}
           </p>
-          <p className="text-muted text-xs">© {year} All rights reserved.</p>
-        </div>
-        <div className="mt-3 flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-slate-500">
-          <a href="#/privacy-policy" className="hover:text-accent transition-colors">
-            Privacy Policy
-          </a>
-          <a href="#/terms-and-conditions" className="hover:text-accent transition-colors">
-            Terms and Conditions
-          </a>
-        </div>
-        <div className="mt-4 text-[11px] leading-relaxed text-slate-500 text-center sm:text-left">
-          Trademarked names, logos, and brands belong to their respective owners. Referenced here for portfolio demonstration and identification only.
+          <div className="flex flex-wrap items-center justify-center lg:justify-end gap-x-3 gap-y-1 text-xs text-slate-500 max-w-full">
+            <p className="text-muted text-xs whitespace-nowrap">© {year} All rights reserved.</p>
+            <span className="text-slate-400">|</span>
+            <a href="#/privacy-policy" className="whitespace-nowrap hover:text-accent transition-colors">
+              Privacy Policy
+            </a>
+            <span className="text-slate-400">|</span>
+            <a href="#/terms-and-conditions" className="whitespace-nowrap hover:text-accent transition-colors">
+              Terms and Conditions
+            </a>
+          </div>
         </div>
       </div>
     </footer>
