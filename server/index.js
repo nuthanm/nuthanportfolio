@@ -338,15 +338,23 @@ app.get('/api/github-stats', async (req, res) => {
   try {
     const username = parseGithubUsername(req.query?.username)
     if (!username) {
+      console.warn('GitHub stats: No username provided')
       res.status(400).json({ ok: false, error: 'GitHub username is required.' })
       return
     }
 
+    console.log(`Fetching GitHub stats for: ${username}`)
     const userStats = await fetchGitHubUserStats(username)
     const [contributionsCurrentYear, contributionsSoFar] = await Promise.all([
       fetchContributionsCurrentYear(username),
       fetchContributionsSoFar(username, userStats.createdAt),
     ])
+
+    console.log(`GitHub stats fetched successfully for ${username}:`, {
+      publicRepos: userStats.publicRepos,
+      currentYear: contributionsCurrentYear,
+      soFar: contributionsSoFar,
+    })
 
     res.setHeader('Cache-Control', 'public, max-age=1800')
     res.json({
@@ -358,7 +366,8 @@ app.get('/api/github-stats', async (req, res) => {
       updatedAt: new Date().toISOString(),
     })
   } catch (error) {
-    console.error('GitHub stats endpoint error:', error)
+    const errorMsg = error instanceof Error ? error.message : String(error)
+    console.error(`GitHub stats endpoint error for ${req.query?.username}:`, errorMsg)
     res.status(500).json({ ok: false, error: 'Unable to fetch GitHub stats right now.' })
   }
 })

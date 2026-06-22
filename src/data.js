@@ -6,7 +6,7 @@ export const personalInfo = {
   title: "Programmer | Instructor | Designer | Hodophile",
   tagline: "Engineering business-ready digital products with .NET precision, teach tech, and document my learning journey.",
   itCareerStartDate: "2013-12-01",
-  bio: "I bring {yearsExperience}+ years of hands-on experience building enterprise applications using Microsoft .NET, C#, and SQL Server as my core stack. My mainstream work has focused on designing robust backend systems, building secure and scalable Web APIs, and delivering Azure-driven implementations for performance, reliability, and long-term maintainability. Alongside product delivery, I mentor developers and share practical engineering knowledge through technical content.",
+  bio: "I bring {yearsExperience} years of hands-on experience building enterprise applications using Microsoft .NET, C#, and SQL Server as my core stack. My mainstream work has focused on designing robust backend systems, building secure and scalable Web APIs, and delivering Azure-driven implementations for performance, reliability, and long-term maintainability. Alongside product delivery, I mentor developers and share practical engineering knowledge through technical content.",
   email: "inbox.nuthan@gmail.com",
   phone: "+91 XXXXXXXXXX", // Keep private or remove
   location: "India",
@@ -22,10 +22,10 @@ export const personalInfo = {
 }
 
 export const githubStats = [
-  { label: "Public Repositories", value: "66+" },
-  { label: "Contributions (Current Year)", value: "0" },
-  { label: "Contributions (So Far)", value: "636" },
-  { label: "Years of IT Experience", value: "12+" },
+  { label: "Public Repositories", value: "—" },
+  { label: "Contributions (Current Year)", value: "—" },
+  { label: "Contributions (So Far)", value: "—" },
+  { label: "Years of IT Experience", value: "12.5" },
 ]
 
 export const uiFlags = {

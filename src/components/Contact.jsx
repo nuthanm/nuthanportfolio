@@ -234,8 +234,6 @@ export default function Contact() {
           </div>
           <a
             href={personalInfo.resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
             download
             className="flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-light text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-accent/25 hover:-translate-y-0.5 whitespace-nowrap"
           >

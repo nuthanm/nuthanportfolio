@@ -56,18 +56,40 @@ function parseGithubUsername(value) {
 function getCompletedYears(startDateText) {
   const startDate = new Date(startDateText)
   if (Number.isNaN(startDate.getTime())) {
-    return 0
+    return '0'
   }
 
   const now = new Date()
-  let years = now.getFullYear() - startDate.getFullYear()
-  const monthDelta = now.getMonth() - startDate.getMonth()
+  const startYear = startDate.getFullYear()
+  const startMonth = startDate.getMonth()
+  const startDay = startDate.getDate()
 
-  if (monthDelta < 0 || (monthDelta === 0 && now.getDate() < startDate.getDate())) {
-    years -= 1
+  const currentYear = now.getFullYear()
+  const currentMonth = now.getMonth()
+  const currentDay = now.getDate()
+
+  // Calculate complete years
+  let years = currentYear - startYear
+
+  // Calculate month and day difference
+  let months = currentMonth - startMonth
+  let days = currentDay - startDay
+
+  // Adjust if day hasn't occurred yet in current month
+  if (days < 0) {
+    months -= 1
+    days += 30
   }
 
-  return Math.max(0, years)
+  // Adjust if month hasn't occurred yet in current year
+  if (months < 0) {
+    years -= 1
+    months += 12
+  }
+
+  // Convert months and days to decimal fraction
+  const decimalYears = years + (months + days / 30) / 12
+  return String(Math.max(0, Math.round(decimalYears * 10) / 10))
 }
 
 export default function Hero() {
@@ -105,7 +127,7 @@ export default function Hero() {
       }
 
       if (stat.label === 'Years of IT Experience') {
-        return { ...stat, value: `${completedYears}+` }
+        return { ...stat, value: `${completedYears}` }
       }
 
       return stat
@@ -122,26 +144,41 @@ export default function Hero() {
     const loadStats = async () => {
       try {
         const endpoint = `${githubStatsEndpoint}?username=${encodeURIComponent(githubUsername)}`
+        console.log(`[Hero] Fetching GitHub stats from: ${endpoint}`)
+        
         const response = await fetch(endpoint, {
           method: 'GET',
           headers: { Accept: 'application/json' },
         })
 
         if (!response.ok) {
+          console.warn(`[Hero] GitHub stats fetch failed with status: ${response.status}`)
           return
         }
 
         const data = await response.json()
-        if (!data?.ok || isDisposed) {
+        if (!data?.ok) {
+          console.warn('[Hero] GitHub stats API returned error:', data?.error)
           return
         }
+        
+        if (isDisposed) {
+          return
+        }
+
+        console.log('[Hero] GitHub stats fetched successfully:', {
+          publicRepos: data.publicRepos,
+          currentYear: data.contributionsCurrentYear,
+          soFar: data.contributionsSoFar,
+        })
 
         setLiveGitHubStats({
           publicRepos: Number(data.publicRepos || 0),
           contributionsCurrentYear: Number(data.contributionsCurrentYear || 0),
           contributionsSoFar: Number(data.contributionsSoFar || 0),
         })
-      } catch (_error) {
+      } catch (error) {
+        console.warn('[Hero] Failed to fetch GitHub stats:', error instanceof Error ? error.message : String(error))
         // Keep fallback static stats when external API is unavailable.
       }
     }
@@ -238,14 +275,19 @@ export default function Hero() {
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.55, duration: 0.6 }}
-            className="grid grid-cols-2 gap-3 max-w-2xl"
+            className="flex flex-col gap-3 max-w-2xl"
           >
-            {resolvedStats.map((stat) => (
-              <div key={stat.label} className="glass-card p-4 bg-white/90">
-                <p className="text-2xl font-extrabold text-accent">{stat.value}</p>
-                <p className="text-xs text-text-secondary mt-1">{stat.label}</p>
-              </div>
-            ))}
+            <div className="grid grid-cols-2 gap-3">
+              {resolvedStats.map((stat) => (
+                <div key={stat.label} className="glass-card p-4 bg-white/90">
+                  <p className="text-2xl font-extrabold text-accent">{stat.value}</p>
+                  <p className="text-xs text-text-secondary mt-1">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-text-secondary italic mt-2">
+              💡 <span className="font-medium">Note:</span> GitHub statistics are cached and may not reflect real-time updates. They refresh periodically.
+            </p>
           </motion.div>
 
           <motion.div
