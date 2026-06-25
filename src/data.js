@@ -309,7 +309,7 @@ export const portfolio = [
       "Educational platform for learning programming concepts with interactive tutorials and examples.",
     tech: ["Python", "Vercel"],
     liveUrl: "https://learn-it-here.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flearn-it-here.vercel.app%2F?w=1200",
+    image: "https://github.com/user-attachments/assets/af5ad6ee-5136-4d14-860c-2ced250453ed",
     category: "Educational",
   },
   {
