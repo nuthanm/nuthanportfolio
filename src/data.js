@@ -329,7 +329,7 @@ export const portfolio = [
       "Interactive learning app for understanding WIQL concepts and exploring how to query Azure DevOps work items more effectively.",
     tech: ["WIQL", "Azure DevOps", "Vercel"],
     liveUrl: "https://learn-wiql.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flearn-wiql.vercel.app%2F?w=1200",
+    image: "/thumbnails/learn-wiql.svg",
     category: "Educational",
   },
 ]
