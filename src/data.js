@@ -307,9 +307,9 @@ export const portfolio = [
     name: "LearnItHere",
     description:
       "Educational platform for learning programming concepts with interactive tutorials and examples.",
-    tech: ["Python", "Streamlit"],
-    liveUrl: "https://learnithere.streamlit.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flearnithere.streamlit.app%2F?w=1200",
+    tech: ["Python", "Vercel"],
+    liveUrl: "https://learn-it-here.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flearn-it-here.vercel.app%2F?w=1200",
     category: "Educational",
   },
   {
