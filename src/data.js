@@ -322,4 +322,14 @@ export const portfolio = [
     image: "/thumbnails/lets-evaluate-v2.svg",
     category: "Interview Evaluation",
   },
+  {
+    id: 8,
+    name: "Learn WIQL",
+    description:
+      "Interactive learning app for understanding WIQL concepts and exploring how to query Azure DevOps work items more effectively.",
+    tech: ["WIQL", "Azure DevOps", "Vercel"],
+    liveUrl: "https://learn-wiql.vercel.app/",
+    image: "/thumbnails/learn-wiql.svg",
+    category: "Educational",
+  },
 ]
