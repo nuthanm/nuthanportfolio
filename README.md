@@ -130,6 +130,8 @@ cd nuthanportfolio
 npm ci
 ```
 
+> Recommended for a clean, reproducible setup. If you specifically need a standard local install workflow, `npm install` also works.
+
 ### 3. Configure environment variables
 
 ```bash
