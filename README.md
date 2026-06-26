@@ -127,10 +127,10 @@ cd nuthanportfolio
 ### 2. Install dependencies
 
 ```bash
-npm ci
+npm install
 ```
 
-> Recommended for a clean, reproducible setup. If you specifically need a standard local install workflow, `npm install` also works.
+> Use `npm install` for standard local development. For a clean, reproducible install against the committed lockfile, you can use `npm ci`.
 
 ### 3. Configure environment variables
 
