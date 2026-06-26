@@ -2,6 +2,21 @@
 
 > Personal portfolio website for **Nuthan Murarysetty** — Application Architect, Full Stack Developer, Instructor, and Content Creator with 12+ years of enterprise engineering experience.
 
+[![Live Site](https://img.shields.io/badge/Live%20Site-Visit%20Portfolio-0A66C2?style=for-the-badge&logo=vercel&logoColor=white)](https://nuthanportfolio.vercel.app/)
+[![Last Commit](https://img.shields.io/github/last-commit/nuthanm/nuthanportfolio?style=for-the-badge&logo=github)](https://github.com/nuthanm/nuthanportfolio/commits/main)
+[![React 18](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
+[![Vite 5](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS 3](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+
+## Quick Links
+
+[Live Portfolio](https://nuthanportfolio.vercel.app/) •
+[Content Guide](./docs/content-update-guide.md) •
+[Contact Form Setup](./docs/contact-form-gmail-setup.md) •
+[LinkedIn](https://www.linkedin.com/in/nuthanm/) •
+[GitHub](https://github.com/nuthanm)
+
 ---
 
 ## 🌐 Live Preview
@@ -10,19 +25,13 @@
 
 ---
 
-## ✨ Features
+## ✨ Highlights
 
-| Section | Description |
-|---|---|
-| **Hero** | Introduction, tagline, social links, and resume download |
-| **Live GitHub Metrics** | Auto-updated public repos and contribution stats (current year + so far) |
-| **AI Tools Strip** | Transparent showcase of AI copilots used during development |
-| **Career Timeline** | Full professional history from 2013 to present |
-| **Skills** | Categorised tech stack across Frontend, Backend, Cloud, Databases, and more |
-| **Portfolio** | Live project cards with preview thumbnails |
-| **Contact** | Secure contact form with anti-spam, honeypot, captcha, and Gmail SMTP delivery |
-| **Privacy & Terms** | Built-in Privacy Policy and Terms & Conditions pages |
-| **Footer** | Attribution, copyright, and social links |
+- **Professional personal brand site** with a polished one-page experience and dedicated legal pages.
+- **Live GitHub stats integration** to showcase contribution activity and repository metrics automatically.
+- **Secure contact flow** powered by server-side validation, captcha protection, rate limiting, Helmet, and CORS.
+- **Content-first architecture** where portfolio details are maintained centrally in `src/data.js`.
+- **Deployment-ready Vercel setup** with serverless API endpoints for contact and GitHub metrics.
 
 ---
 
@@ -58,7 +67,7 @@
 
 ## 📁 Project Structure
 
-```
+```text
 nuthanportfolio/
 ├── api/                        # Vercel serverless API functions
 │   ├── contact.js              # Contact form handler (email via Gmail SMTP)
@@ -87,7 +96,7 @@ nuthanportfolio/
 │   │   ├── Skills.jsx
 │   │   ├── TermsAndConditionsPage.jsx
 │   │   └── Timeline.jsx
-│   ├── data.js                 # ⭐ All portfolio content lives here
+│   ├── data.js                 # All portfolio content lives here
 │   ├── App.jsx
 │   ├── main.jsx
 │   └── index.css
@@ -120,6 +129,8 @@ cd nuthanportfolio
 ```bash
 npm install
 ```
+
+> Use `npm install` for standard local development. For a clean, reproducible install against the committed lockfile, you can use `npm ci`.
 
 ### 3. Configure environment variables
 
