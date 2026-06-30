@@ -22,7 +22,7 @@ export const personalInfo = {
 }
 
 export const githubStats = [
-  { label: "Public Repositories", value: "—" },
+  { label: "Public Repositories", value: "25*" },
   { label: "Contributions (Current Year)", value: "—" },
   { label: "Contributions (So Far)", value: "—" },
   { label: "Years of IT Experience", value: "12.5" },
@@ -157,6 +157,15 @@ export const timeline = [
 export const certifications = [
   {
     id: 1,
+    title: "Claude Code 101",
+    issuer: "Anthropic Education",
+    year: "2026",
+    issuedOn: "June 29, 2026",
+    credentialUrl: "https://verify.skilljar.com/c/crf8o2iu2vqb",
+    logoImage: "/logos/ai-claude.svg",
+  },
+  {
+    id: 2,
     title: "Google Prompting Essentials (Prompt Engineering)",
     issuer: "Google via Coursera",
     year: "2026",
@@ -165,7 +174,7 @@ export const certifications = [
     logoImage: "/logos/coursera.svg",
   },
   {
-    id: 2,
+    id: 3,
     title: "Microsoft Certified: Azure Fundamentals",
     issuer: "Microsoft",
     year: "2021",
@@ -174,7 +183,7 @@ export const certifications = [
     logoImage: "/logos/microsoft.svg",
   },
   {
-    id: 3,
+    id: 4,
     title: "Learning Markdown: Formatting Text without the Complexity",
     issuer: "LinkedIn Learning",
     year: "2026",
@@ -183,7 +192,7 @@ export const certifications = [
     logoImage: "/logos/linkedin-learning.svg",
   },
   {
-    id: 4,
+    id: 5,
     title: "Build with AI: Creating Apps with Cursor 2 Agents",
     issuer: "LinkedIn Learning",
     year: "2026",
@@ -192,7 +201,7 @@ export const certifications = [
     logoImage: "/logos/linkedin-learning.svg",
   },
   {
-    id: 5,
+    id: 6,
     title: "AI Agents for Everyday Professionals: Simple Automations to Speed Up Your Work (No Code Required)",
     issuer: "LinkedIn Learning",
     year: "2026",
@@ -201,7 +210,7 @@ export const certifications = [
     logoImage: "/logos/linkedin-learning.svg",
   },
   {
-    id: 6,
+    id: 7,
     title: "Learning the OWASP Top 10",
     issuer: "LinkedIn Learning",
     year: "2025",
@@ -210,7 +219,7 @@ export const certifications = [
     logoImage: "/logos/linkedin-learning.svg",
   },
   {
-    id: 7,
+    id: 8,
     title: "Software Architecture: From Developer to Architect",
     issuer: "LinkedIn Learning",
     year: "2025",

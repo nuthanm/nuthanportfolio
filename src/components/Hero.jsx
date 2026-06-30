@@ -5,6 +5,62 @@ import { FiArrowDown, FiGithub, FiLinkedin, FiMail, FiTwitter } from 'react-icon
 import { SiCodementor, SiMedium } from 'react-icons/si'
 import { githubStats, personalInfo } from '../data'
 
+const GITHUB_STATS_CACHE_KEY = 'hero.githubStatsCache.v1'
+
+function readCachedGithubStats() {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  try {
+    const raw = window.localStorage.getItem(GITHUB_STATS_CACHE_KEY)
+    if (!raw) {
+      return null
+    }
+
+    const parsed = JSON.parse(raw)
+    const publicRepos = Number(parsed?.publicRepos)
+    const contributionsCurrentYear = Number(parsed?.contributionsCurrentYear)
+    const contributionsSoFar = Number(parsed?.contributionsSoFar)
+
+    if (
+      !Number.isFinite(publicRepos)
+      || !Number.isFinite(contributionsCurrentYear)
+      || !Number.isFinite(contributionsSoFar)
+    ) {
+      return null
+    }
+
+    return {
+      publicRepos,
+      contributionsCurrentYear,
+      contributionsSoFar,
+      isFallbackPrevious: true,
+    }
+  } catch (_error) {
+    return null
+  }
+}
+
+function writeCachedGithubStats(stats) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  try {
+    window.localStorage.setItem(
+      GITHUB_STATS_CACHE_KEY,
+      JSON.stringify({
+        publicRepos: Number(stats?.publicRepos || 0),
+        contributionsCurrentYear: Number(stats?.contributionsCurrentYear || 0),
+        contributionsSoFar: Number(stats?.contributionsSoFar || 0),
+      })
+    )
+  } catch (_error) {
+    // Ignore storage errors and continue with in-memory values.
+  }
+}
+
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
   visible: (delay = 0) => ({
@@ -93,7 +149,8 @@ function getCompletedYears(startDateText) {
 }
 
 export default function Hero() {
-  const [liveGitHubStats, setLiveGitHubStats] = useState(null)
+  const [liveGitHubStats, setLiveGitHubStats] = useState(() => readCachedGithubStats())
+  const [fallbackNotice, setFallbackNotice] = useState('')
 
   const contactEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT || '/api/contact'
   const configuredStatsEndpoint = import.meta.env.VITE_GITHUB_STATS_ENDPOINT
@@ -115,15 +172,24 @@ export default function Hero() {
   const resolvedStats = useMemo(() => {
     return githubStats.map((stat) => {
       if (stat.label === 'Public Repositories' && liveGitHubStats?.publicRepos != null) {
-        return { ...stat, value: `${liveGitHubStats.publicRepos}` }
+        const value = liveGitHubStats.isFallbackPrevious
+          ? `${liveGitHubStats.publicRepos}*`
+          : `${liveGitHubStats.publicRepos}`
+        return { ...stat, value }
       }
 
       if (stat.label === 'Contributions (Current Year)' && liveGitHubStats?.contributionsCurrentYear != null) {
-        return { ...stat, value: `${liveGitHubStats.contributionsCurrentYear}` }
+        const value = liveGitHubStats.isFallbackPrevious
+          ? `${liveGitHubStats.contributionsCurrentYear}*`
+          : `${liveGitHubStats.contributionsCurrentYear}`
+        return { ...stat, value }
       }
 
       if (stat.label === 'Contributions (So Far)' && liveGitHubStats?.contributionsSoFar != null) {
-        return { ...stat, value: `${liveGitHubStats.contributionsSoFar}` }
+        const value = liveGitHubStats.isFallbackPrevious
+          ? `${liveGitHubStats.contributionsSoFar}*`
+          : `${liveGitHubStats.contributionsSoFar}`
+        return { ...stat, value }
       }
 
       if (stat.label === 'Years of IT Experience') {
@@ -134,6 +200,10 @@ export default function Hero() {
     })
   }, [completedYears, liveGitHubStats])
 
+  const hasStarredStats = useMemo(() => {
+    return resolvedStats.some((stat) => String(stat.value || '').includes('*'))
+  }, [resolvedStats])
+
   useEffect(() => {
     if (!githubUsername) {
       return
@@ -142,6 +212,14 @@ export default function Hero() {
     let isDisposed = false
 
     const loadStats = async () => {
+      const setPreviousFallbackState = () => {
+        const cachedStats = readCachedGithubStats()
+        if (cachedStats) {
+          setLiveGitHubStats(cachedStats)
+          setFallbackNotice('Using previous GitHub stats as fallback. Values marked with * are from earlier data.')
+        }
+      }
+
       try {
         const endpoint = `${githubStatsEndpoint}?username=${encodeURIComponent(githubUsername)}`
         console.log(`[Hero] Fetching GitHub stats from: ${endpoint}`)
@@ -153,12 +231,14 @@ export default function Hero() {
 
         if (!response.ok) {
           console.warn(`[Hero] GitHub stats fetch failed with status: ${response.status}`)
+          setPreviousFallbackState()
           return
         }
 
         const data = await response.json()
         if (!data?.ok) {
           console.warn('[Hero] GitHub stats API returned error:', data?.error)
+          setPreviousFallbackState()
           return
         }
         
@@ -172,14 +252,19 @@ export default function Hero() {
           soFar: data.contributionsSoFar,
         })
 
-        setLiveGitHubStats({
+        const freshStats = {
           publicRepos: Number(data.publicRepos || 0),
           contributionsCurrentYear: Number(data.contributionsCurrentYear || 0),
           contributionsSoFar: Number(data.contributionsSoFar || 0),
-        })
+          isFallbackPrevious: false,
+        }
+
+        setLiveGitHubStats(freshStats)
+        writeCachedGithubStats(freshStats)
+        setFallbackNotice('')
       } catch (error) {
         console.warn('[Hero] Failed to fetch GitHub stats:', error instanceof Error ? error.message : String(error))
-        // Keep fallback static stats when external API is unavailable.
+        setPreviousFallbackState()
       }
     }
 
@@ -280,11 +365,30 @@ export default function Hero() {
             <div className="grid grid-cols-2 gap-3">
               {resolvedStats.map((stat) => (
                 <div key={stat.label} className="glass-card p-4 bg-white/90">
-                  <p className="text-2xl font-extrabold text-accent">{stat.value}</p>
+                  <p className="text-2xl font-extrabold text-accent">
+                    {String(stat.value || '').endsWith('*')
+                      ? (
+                        <>
+                          {String(stat.value || '').slice(0, -1)}
+                          <sup className="text-xs align-super ml-0.5">*</sup>
+                        </>
+                      )
+                      : stat.value}
+                  </p>
                   <p className="text-xs text-text-secondary mt-1">{stat.label}</p>
                 </div>
               ))}
             </div>
+            {hasStarredStats && !fallbackNotice && (
+              <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                <span className="font-semibold">*</span> indicates fallback or previously cached GitHub values.
+              </p>
+            )}
+            {fallbackNotice && (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                {fallbackNotice}
+              </div>
+            )}
             <p className="text-xs text-text-secondary italic mt-2">
               💡 <span className="font-medium">Note:</span> GitHub statistics are cached and may not reflect real-time updates. They refresh periodically.
             </p>
