@@ -316,9 +316,9 @@ export const portfolio = [
     name: "LearnItHere",
     description:
       "Educational platform for learning programming concepts with interactive tutorials and examples.",
-    tech: ["Python", "Streamlit"],
-    liveUrl: "https://learnithere.streamlit.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flearnithere.streamlit.app%2F?w=1200",
+    tech: ["Python", "Vercel"],
+    liveUrl: "https://learn-it-here.vercel.app/",
+    image: "https://github.com/user-attachments/assets/af5ad6ee-5136-4d14-860c-2ced250453ed",
     category: "Educational",
   },
   {
@@ -330,5 +330,15 @@ export const portfolio = [
     liveUrl: "https://lets-evaluate.streamlit.app/",
     image: "/thumbnails/lets-evaluate-v2.svg",
     category: "Interview Evaluation",
+  },
+  {
+    id: 8,
+    name: "Learn WIQL",
+    description:
+      "Interactive learning app for understanding WIQL concepts and exploring how to query Azure DevOps work items more effectively.",
+    tech: ["WIQL", "Azure DevOps", "Vercel"],
+    liveUrl: "https://learn-wiql.vercel.app/",
+    image: "/thumbnails/learn-wiql.svg",
+    category: "Educational",
   },
 ]
