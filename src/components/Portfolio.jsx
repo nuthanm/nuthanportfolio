@@ -22,6 +22,10 @@ const categoryStyles = {
     badge: 'bg-blue-50 text-blue-700 border-blue-200',
     frame: 'from-blue-100 to-cyan-100',
   },
+  'Browser Extension': {
+    badge: 'bg-violet-50 text-violet-700 border-violet-200',
+    frame: 'from-violet-100 to-purple-100',
+  },
 }
 
 function AppCard({ app, index }) {
