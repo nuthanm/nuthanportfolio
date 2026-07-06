@@ -262,6 +262,16 @@ export const skills = [
 
 export const portfolio = [
   {
+    id: 11,
+    name: "AI Dev Reference",
+    description:
+      "Searchable commands, skills, agents, and hooks for Claude, Cursor, and GitHub Copilot — one reference, always current.",
+    tech: ["Next.js", "React", "TypeScript"],
+    liveUrl: "https://www.aidevreference.com/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fwww.aidevreference.com%2F?w=1200",
+    category: "Developer Tools",
+  },
+  {
     id: 1,
     name: "Investment Tracker",
     description:
