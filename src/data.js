@@ -272,16 +272,6 @@ export const portfolio = [
     category: "Developer Tools",
   },
   {
-    id: 1,
-    name: "Investment Tracker",
-    description:
-      "Track your investments and monitor portfolio performance with real-time analytics and reports.",
-    tech: ["React", "Vercel", "JavaScript"],
-    liveUrl: "https://myinvestmenttracker.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmyinvestmenttracker.vercel.app%2F?w=1200",
-    category: "Financial",
-  },
-  {
     id: 2,
     name: "Let's Evaluate",
     description:
@@ -290,6 +280,16 @@ export const portfolio = [
     liveUrl: "https://lets-evaluate.vercel.app/",
     image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flets-evaluate.vercel.app%2F?w=1200",
     category: "Interview Evaluation",
+  },
+  {
+    id: 1,
+    name: "Investment Tracker",
+    description:
+      "Track your investments and monitor portfolio performance with real-time analytics and reports.",
+    tech: ["React", "Vercel", "JavaScript"],
+    liveUrl: "https://myinvestmenttracker.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmyinvestmenttracker.vercel.app%2F?w=1200",
+    category: "Financial",
   },
   {
     id: 3,
