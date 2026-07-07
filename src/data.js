@@ -273,6 +273,16 @@ export const portfolio = [
   },
   {
     id: 2,
+    name: "Let's Evaluate",
+    description:
+      "Talent acquisition platform for structured hiring evaluations. AI assists, humans decide — upload resumes, analyse evidence, and record verdicts.",
+    tech: ["React", "Vercel", "TypeScript"],
+    liveUrl: "https://lets-evaluate.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flets-evaluate.vercel.app%2F?w=1200",
+    category: "Interview Evaluation",
+  },
+  {
+    id: 3,
     name: "Debt Tracker",
     description:
       "Manage and track your debts efficiently. Monitor payments and get insights into your financial health.",
@@ -282,7 +292,7 @@ export const portfolio = [
     category: "Financial",
   },
   {
-    id: 3,
+    id: 4,
     name: "Private Journal & Todo",
     description:
       "Private journaling and todo management app to capture thoughts, plan tasks, and stay organized securely.",
@@ -292,7 +302,7 @@ export const portfolio = [
     category: "Productivity",
   },
   {
-    id: 4,
+    id: 5,
     name: "MailMind",
     description:
       "Mail management app to organize inbox workflows, classify messages, and surface useful email insights.",
@@ -302,7 +312,7 @@ export const portfolio = [
     category: "Mail",
   },
   {
-    id: 5,
+    id: 6,
     name: "LinkVault",
     description:
       "Centralized link management. Collect, organize, and share your favorite links in one place.",
@@ -312,7 +322,7 @@ export const portfolio = [
     category: "Web App",
   },
   {
-    id: 6,
+    id: 7,
     name: "LearnItHere",
     description:
       "Educational platform for learning programming concepts with interactive tutorials and examples.",
@@ -320,16 +330,6 @@ export const portfolio = [
     liveUrl: "https://learn-it-here.vercel.app/",
     image: "https://github.com/user-attachments/assets/af5ad6ee-5136-4d14-860c-2ced250453ed",
     category: "Educational",
-  },
-  {
-    id: 7,
-    name: "Let's Evaluate",
-    description:
-      "Candidate evaluation tool. Assess profiles and generate comprehensive statistics in one place.",
-    tech: ["Python", "Streamlit"],
-    liveUrl: "https://lets-evaluate.streamlit.app/",
-    image: "/thumbnails/lets-evaluate-v2.svg",
-    category: "Interview Evaluation",
   },
   {
     id: 8,
