@@ -262,6 +262,16 @@ export const skills = [
 
 export const portfolio = [
   {
+    id: 11,
+    name: "AI Dev Reference",
+    description:
+      "Searchable commands, skills, agents, and hooks for Claude, Cursor, and GitHub Copilot — one reference, always current.",
+    tech: ["Next.js", "React", "TypeScript"],
+    liveUrl: "https://www.aidevreference.com/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fwww.aidevreference.com%2F?w=1200",
+    category: "Developer Tools",
+  },
+  {
     id: 1,
     name: "Investment Tracker",
     description:
@@ -340,5 +350,25 @@ export const portfolio = [
     liveUrl: "https://learn-wiql.vercel.app/",
     image: "/thumbnails/learn-wiql.svg",
     category: "Educational",
+  },
+  {
+    id: 9,
+    name: "WatchProof",
+    description:
+      "YouTube progress export extension with segment-level tracking, skip audit, session logs, and exportable CSV/JSON reports — 100% local storage.",
+    tech: ["Chrome Extension", "Manifest V3", "JavaScript"],
+    liveUrl: "https://nuthanm.github.io/WatchProof",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fnuthanm.github.io%2FWatchProof?w=1200",
+    category: "Browser Extension",
+  },
+  {
+    id: 10,
+    name: "Calmodoro",
+    description:
+      "Calm Pomodoro timer for Chrome with wellness break rituals, micro-reminders, schedule-aware focus sessions, and a live toolbar badge countdown.",
+    tech: ["Chrome Extension", "Manifest V3", "JavaScript"],
+    liveUrl: "https://nuthanm.github.io/Calmodoro",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fnuthanm.github.io%2FCalmodoro?w=1200",
+    category: "Browser Extension",
   },
 ]
