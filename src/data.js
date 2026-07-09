@@ -292,6 +292,16 @@ export const portfolio = [
     category: "Financial",
   },
   {
+    id: 12,
+    name: "FinYatra",
+    description:
+      "Free, India-first personal finance calculators and planners with formulas, worked examples, and multilingual support — SIP, EMI, FIRE, and more.",
+    tech: ["Next.js", "React", "TypeScript"],
+    liveUrl: "https://finyatra.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Ffinyatra.vercel.app%2F?w=1200",
+    category: "Financial",
+  },
+  {
     id: 3,
     name: "Debt Tracker",
     description:
