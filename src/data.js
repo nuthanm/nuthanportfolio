@@ -305,10 +305,10 @@ export const portfolio = [
     id: 3,
     name: "Debt Tracker",
     description:
-      "Manage and track your debts efficiently. Monitor payments and get insights into your financial health.",
+      "Household debt planner with one living board for every loan, EMI, and interest due — track payments, payoff priorities, and export your ledger privately.",
     tech: ["React", "Vercel", "JavaScript"],
-    liveUrl: "http://mydebttracker.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/http%3A%2F%2Fmydebttracker.vercel.app%2F?w=1200",
+    liveUrl: "https://mydebttracker.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmydebttracker.vercel.app%2F?w=1200",
     category: "Financial",
   },
   {

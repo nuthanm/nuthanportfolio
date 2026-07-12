@@ -43,7 +43,7 @@
 ### Portfolio Projects
 | Investment Tracker | Debt Tracker | Private Journal |
 |---|---|---|
-| [![Investment Tracker](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmyinvestmenttracker.vercel.app%2F?w=400)](https://myinvestmenttracker.vercel.app/) | [![Debt Tracker](https://s.wordpress.com/mshots/v1/http%3A%2F%2Fmydebttracker.vercel.app%2F?w=400)](http://mydebttracker.vercel.app/) | [![Private Journal](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fprivate-journal.vercel.app%2F?w=400)](https://private-journal.vercel.app/) |
+| [![Investment Tracker](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmyinvestmenttracker.vercel.app%2F?w=400)](https://myinvestmenttracker.vercel.app/) | [![Debt Tracker](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmydebttracker.vercel.app%2F?w=400)](https://mydebttracker.vercel.app/) | [![Private Journal](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fprivate-journal.vercel.app%2F?w=400)](https://private-journal.vercel.app/) |
 
 ---
 
