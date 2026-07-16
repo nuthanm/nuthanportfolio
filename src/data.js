@@ -282,6 +282,16 @@ export const portfolio = [
     category: "Interview Evaluation",
   },
   {
+    id: 13,
+    name: "SQLinq",
+    description:
+      "Interactive SQL learning and query exploration tool — practice SQL concepts, run queries, and sharpen your database skills in the browser.",
+    tech: ["SQL", "React", "Vercel"],
+    liveUrl: "https://sqlinq.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fsqlinq.vercel.app%2F?w=1200",
+    category: "Developer Tools",
+  },
+  {
     id: 1,
     name: "Investment Tracker",
     description:
