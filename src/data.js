@@ -285,7 +285,7 @@ export const portfolio = [
     id: 13,
     name: "SQLinq",
     description:
-      "Interactive SQL learning and query exploration tool — practice SQL concepts, run queries, and sharpen your database skills in the browser.",
+      "Convert SQL queries to LINQ expressions instantly — a developer tool for translating SQL syntax into equivalent LINQ query syntax.",
     tech: ["SQL", "React", "Vercel"],
     liveUrl: "https://sqlinq.vercel.app/",
     image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fsqlinq.vercel.app%2F?w=1200",
