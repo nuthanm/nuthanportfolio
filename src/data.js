@@ -397,8 +397,8 @@ export const portfolio = [
     description:
       "Exvyn is a tool that helps you to convert excel data into visual representation.",
     tech: ["Next.js", "React", "TypeScript"],
-    liveUrl: "https://nuthanm.github.io/exvyn",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fnuthanm.github.io%2Fexvyn?w=1200",
+    liveUrl: "https://exvyn.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fexvyn.vercel.app%2F?w=1200",
     category: "Developer Tools",
   },
 ]
