@@ -262,6 +262,16 @@ export const skills = [
 
 export const portfolio = [
   {
+    id: 14,
+    name: "KeepCut",
+    description:
+      "Private, on-device background removal — drop a photo, snip the backdrop, and keep every pixel in your browser.",
+    tech: ["Next.js", "React", "Vercel"],
+    liveUrl: "https://keepcut.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fkeepcut.vercel.app%2F?w=1200",
+    category: "Web App",
+  },
+  {
     id: 11,
     name: "AI Dev Reference",
     description:
