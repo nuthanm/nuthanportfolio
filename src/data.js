@@ -402,7 +402,7 @@ export const portfolio = [
     category: "Browser Extension",
   },
   {
-    id: 13,
+    id: 15,
     name: "Exvyn",
     description:
       "Exvyn is a tool that helps you to convert excel data into visual representation.",
@@ -410,5 +410,15 @@ export const portfolio = [
     liveUrl: "https://exvyn.vercel.app/",
     image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fexvyn.vercel.app%2F?w=1200",
     category: "Developer Tools",
+  },
+  {
+    id: 16,
+    name: "SpendFolio",
+    description:
+      "SpendFolio is a tool that helps you to track and manage your expenses effectively.",
+    tech: ["Next.js", "React", "TypeScript"],
+    liveUrl: "https://spendfolio.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fspendfolio.vercel.app%2F?w=1200",
+    category: "Expense Management",
   },
 ]
