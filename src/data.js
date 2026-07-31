@@ -368,7 +368,7 @@ export const portfolio = [
       "Educational platform for learning programming concepts with interactive tutorials and examples.",
     tech: ["Python", "Vercel"],
     liveUrl: "https://learn-it-here.vercel.app/",
-    image: "https://github.com/user-attachments/assets/af5ad6ee-5136-4d14-860c-2ced250453ed",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flearn-it-here.vercel.app%2F?w=1200",
     category: "Educational",
   },
   {
@@ -378,7 +378,7 @@ export const portfolio = [
       "Interactive learning app for understanding WIQL concepts and exploring how to query Azure DevOps work items more effectively.",
     tech: ["WIQL", "Azure DevOps", "Vercel"],
     liveUrl: "https://learn-wiql.vercel.app/",
-    image: "/thumbnails/learn-wiql.svg",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flearn-wiql.vercel.app%2F?w=1200",
     category: "Educational",
   },
   {
