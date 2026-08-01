@@ -1,6 +1,6 @@
 # Nuthan Murarysetty — Portfolio
 
-> Personal portfolio website for **Nuthan Murarysetty** — Application Architect, Full Stack Developer, Instructor, and Content Creator with 12+ years of enterprise engineering experience.
+> Personal portfolio website for **Nuthan Murarysetty** — Application Architect, Instructor, and Content Creator with 12+ years of enterprise engineering experience.
 
 [![Live Site](https://img.shields.io/badge/Live%20Site-Visit%20Portfolio-0A66C2?style=for-the-badge&logo=vercel&logoColor=white)](https://nuthanportfolio.vercel.app/)
 [![Last Commit](https://img.shields.io/github/last-commit/nuthanm/nuthanportfolio?style=for-the-badge&logo=github)](https://github.com/nuthanm/nuthanportfolio/commits/main)
@@ -18,10 +18,7 @@
 [GitHub](https://github.com/nuthanm)
 
 ---
-
-## 🌐 Live Preview
-
-[![Portfolio Preview](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fnuthanportfolio.vercel.app%2F?w=1200)](https://nuthanportfolio.vercel.app/)
+<img width="1897" height="965" alt="image" src="https://github.com/user-attachments/assets/abf087bd-1f43-4ef2-b4fe-d57b6df28e41" />
 
 ---
 
@@ -36,10 +33,6 @@
 ---
 
 ## 🖼️ Screenshots
-
-### Hero Section
-![Hero](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fnuthanportfolio.vercel.app%2F?w=1200&h=630)
-
 ### Portfolio Projects
 | Investment Tracker | Debt Tracker | Private Journal |
 |---|---|---|
