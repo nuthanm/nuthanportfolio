@@ -262,17 +262,17 @@ export const skills = [
 
 export const portfolio = [
   {
-    id: 14,
-    name: "KeepCut",
+    id: 1,
+    name: "Indian GCC's",
     description:
-      "Private, on-device background removal — drop a photo, snip the backdrop, and keep every pixel in your browser.",
-    tech: ["Next.js", "React", "Vercel"],
-    liveUrl: "https://keepcut.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fkeepcut.vercel.app%2F?w=1200",
-    category: "Web App",
+      "Indian GCC's helps you to find the best Indian GCC's for your job search. It provides a comprehensive list of Indian GCC's with their contact details and services offered. You can easily search and filter the list based on your requirements.",
+    tech: ["Next.js", "React", "TypeScript"],
+    liveUrl: "https://indiangcc.lovable.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Findiangcc.lovable.app%2F?w=1200",
+    category: "Job Search",
   },
   {
-    id: 11,
+    id: 2,
     name: "AI Dev Reference",
     description:
       "Searchable commands, skills, agents, and hooks for Claude, Cursor, and GitHub Copilot — one reference, always current.",
@@ -282,7 +282,7 @@ export const portfolio = [
     category: "Developer Tools",
   },
   {
-    id: 2,
+    id: 3,
     name: "Let's Evaluate",
     description:
       "Talent acquisition platform for structured hiring evaluations. AI assists, humans decide — upload resumes, analyse evidence, and record verdicts.",
@@ -292,7 +292,17 @@ export const portfolio = [
     category: "Interview Evaluation",
   },
   {
-    id: 13,
+    id: 4,
+    name: "KeepCut",
+    description:
+      "Private, on-device background removal — drop a photo, snip the backdrop, and keep every pixel in your browser.",
+    tech: ["Next.js", "React", "Vercel"],
+    liveUrl: "https://keepcut.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fkeepcut.vercel.app%2F?w=1200",
+    category: "Web App",
+  },
+  {
+    id: 5,
     name: "SQLinq",
     description:
       "Convert SQL queries to LINQ expressions instantly — a developer tool for translating SQL syntax into equivalent LINQ query syntax.",
@@ -302,7 +312,7 @@ export const portfolio = [
     category: "Developer Tools",
   },
   {
-    id: 1,
+    id: 6,
     name: "Investment Tracker",
     description:
       "Track your investments and monitor portfolio performance with real-time analytics and reports.",
@@ -312,7 +322,7 @@ export const portfolio = [
     category: "Financial",
   },
   {
-    id: 12,
+    id: 7,
     name: "FinYatra",
     description:
       "Free, India-first personal finance calculators and planners with formulas, worked examples, and multilingual support — SIP, EMI, FIRE, and more.",
@@ -322,7 +332,7 @@ export const portfolio = [
     category: "Financial",
   },
   {
-    id: 3,
+    id: 8,
     name: "Debt Tracker",
     description:
       "Household debt planner with one living board for every loan, EMI, and interest due — track payments, payoff priorities, and export your ledger privately.",
@@ -332,47 +342,7 @@ export const portfolio = [
     category: "Financial",
   },
   {
-    id: 4,
-    name: "Private Journal & Todo",
-    description:
-      "Private journaling and todo management app to capture thoughts, plan tasks, and stay organized securely.",
-    tech: ["TypeScript", "React", "Vercel"],
-    liveUrl: "https://private-journal.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fprivate-journal.vercel.app%2F?w=1200",
-    category: "Productivity",
-  },
-  {
-    id: 5,
-    name: "MailMind",
-    description:
-      "Mail management app to organize inbox workflows, classify messages, and surface useful email insights.",
-    tech: ["JavaScript", "React", "Vercel"],
-    liveUrl: "https://mailmind-for-users.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmailmind-for-users.vercel.app%2F?w=1200",
-    category: "Mail",
-  },
-  {
-    id: 6,
-    name: "LinkVault",
-    description:
-      "Centralized link management. Collect, organize, and share your favorite links in one place.",
-    tech: ["React", "Vercel", "JavaScript"],
-    liveUrl: "https://itsmylinkvault.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fitsmylinkvault.vercel.app%2F?w=1200",
-    category: "Web App",
-  },
-  {
-    id: 16,
-    name: "LearnItHere",
-    description:
-      "Educational platform for learning programming concepts with interactive tutorials and examples.",
-    tech: ["Python", "Vercel"],
-    liveUrl: "https://learn-it-here.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flearn-it-here.vercel.app%2F?w=1200",
-    category: "Educational",
-  },
-  {
-    id: 8,
+    id: 9,
     name: "Learn WIQL",
     description:
       "Interactive learning app for understanding WIQL concepts and exploring how to query Azure DevOps work items more effectively.",
@@ -382,7 +352,7 @@ export const portfolio = [
     category: "Educational",
   },
   {
-    id: 9,
+    id: 10,
     name: "WatchProof",
     description:
       "YouTube progress export extension with segment-level tracking, skip audit, session logs, and exportable CSV/JSON reports — 100% local storage.",
@@ -392,7 +362,7 @@ export const portfolio = [
     category: "Browser Extension",
   },
   {
-    id: 10,
+    id: 11,
     name: "Calmodoro",
     description:
       "Calm Pomodoro timer for Chrome with wellness break rituals, micro-reminders, schedule-aware focus sessions, and a live toolbar badge countdown.",
@@ -402,7 +372,7 @@ export const portfolio = [
     category: "Browser Extension",
   },
   {
-    id: 15,
+    id: 12,
     name: "Exvyn",
     description:
       "Exvyn is a tool that helps you to convert excel data into visual representation.",
@@ -412,7 +382,7 @@ export const portfolio = [
     category: "Developer Tools",
   },
   {
-    id: 16,
+    id: 13,
     name: "SpendFolio",
     description:
       "SpendFolio is a tool that helps you to track and manage your expenses effectively.",
@@ -422,13 +392,43 @@ export const portfolio = [
     category: "Expense Management",
   },
   {
-    id: 7,
-    name: "Indian GCC's",
+    id: 14,
+    name: "Private Journal & Todo",
     description:
-      "Indian GCC's helps you to find the best Indian GCC's for your job search. It provides a comprehensive list of Indian GCC's with their contact details and services offered. You can easily search and filter the list based on your requirements.",
-    tech: ["Next.js", "React", "TypeScript"],
-    liveUrl: "https://indiangcc.lovable.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Findiangcc.lovable.app%2F?w=1200",
-    category: "Job Search",
+      "Private journaling and todo management app to capture thoughts, plan tasks, and stay organized securely.",
+    tech: ["TypeScript", "React", "Vercel"],
+    liveUrl: "https://private-journal.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fprivate-journal.vercel.app%2F?w=1200",
+    category: "Productivity",
+  },
+  {
+    id: 15,
+    name: "MailMind",
+    description:
+      "Mail management app to organize inbox workflows, classify messages, and surface useful email insights.",
+    tech: ["JavaScript", "React", "Vercel"],
+    liveUrl: "https://mailmind-for-users.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmailmind-for-users.vercel.app%2F?w=1200",
+    category: "Mail",
+  },
+  {
+    id: 16,
+    name: "LinkVault",
+    description:
+      "Centralized link management. Collect, organize, and share your favorite links in one place.",
+    tech: ["React", "Vercel", "JavaScript"],
+    liveUrl: "https://itsmylinkvault.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fitsmylinkvault.vercel.app%2F?w=1200",
+    category: "Web App",
+  },
+  {
+    id: 17,
+    name: "LearnItHere",
+    description:
+      "Educational platform for learning programming concepts with interactive tutorials and examples.",
+    tech: ["Python", "Vercel"],
+    liveUrl: "https://learn-it-here.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flearn-it-here.vercel.app%2F?w=1200",
+    category: "Educational",
   }
 ]
