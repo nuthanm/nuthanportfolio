@@ -362,7 +362,7 @@ export const portfolio = [
     category: "Web App",
   },
   {
-    id: 7,
+    id: 16,
     name: "LearnItHere",
     description:
       "Educational platform for learning programming concepts with interactive tutorials and examples.",
@@ -417,8 +417,18 @@ export const portfolio = [
     description:
       "SpendFolio is a tool that helps you to track and manage your expenses effectively.",
     tech: ["Next.js", "React", "TypeScript"],
-    liveUrl: "https://spendfolio.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fspendfolio.vercel.app%2F?w=1200",
+    liveUrl: "https://myspendfolio.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmyspendfolio.vercel.app%2F?w=1200",
     category: "Expense Management",
   },
+  {
+    id: 7,
+    name: "Indian GCC's",
+    description:
+      "Indian GCC's helps you to find the best Indian GCC's for your job search. It provides a comprehensive list of Indian GCC's with their contact details and services offered. You can easily search and filter the list based on your requirements.",
+    tech: ["Next.js", "React", "TypeScript"],
+    liveUrl: "https://indiangcc.lovable.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Findiangcc.lovable.app%2F?w=1200",
+    category: "Job Search",
+  }
 ]
