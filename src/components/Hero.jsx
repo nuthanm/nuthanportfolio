@@ -152,12 +152,25 @@ export default function Hero() {
   const [liveGitHubStats, setLiveGitHubStats] = useState(() => readCachedGithubStats())
   const [fallbackNotice, setFallbackNotice] = useState('')
 
-  const contactEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT || '/api/contact'
+  const configuredContactEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT || '/api/contact'
+  const isNonLocalhostPage =
+    typeof window !== 'undefined'
+    && window.location.hostname !== 'localhost'
+    && window.location.hostname !== '127.0.0.1'
+  const usesLocalhostApi =
+    configuredContactEndpoint.includes('localhost')
+    || configuredContactEndpoint.includes('127.0.0.1')
+  // Production builds must never call a localhost API baked in from local .env
+  const contactEndpoint =
+    isNonLocalhostPage && usesLocalhostApi ? '/api/contact' : configuredContactEndpoint
   const configuredStatsEndpoint = import.meta.env.VITE_GITHUB_STATS_ENDPOINT
-  const githubStatsEndpoint = configuredStatsEndpoint
-    || (contactEndpoint.includes('/contact')
-      ? contactEndpoint.replace('/contact', '/github-stats')
-      : '/api/github-stats')
+  const derivedStatsEndpoint = contactEndpoint.includes('/contact')
+    ? contactEndpoint.replace('/contact', '/github-stats')
+    : '/api/github-stats'
+  const githubStatsEndpoint =
+    configuredStatsEndpoint && !(isNonLocalhostPage && (configuredStatsEndpoint.includes('localhost') || configuredStatsEndpoint.includes('127.0.0.1')))
+      ? configuredStatsEndpoint
+      : derivedStatsEndpoint
 
   const githubUsername = useMemo(() => parseGithubUsername(personalInfo.social?.github), [])
   const completedYears = useMemo(

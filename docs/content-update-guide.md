@@ -63,8 +63,10 @@ If category icon/style is needed, also update src/components/Skills.jsx in categ
    - liveUrl
    - image
    - category
+   - status (`live` or `maintenance`)
 
 Tip: For stable thumbnails, store local images in public/thumbnails and use /thumbnails/name.svg or .png
+Tip: Set `status: "maintenance"` to keep the card visible, disable Launch, and show "Under Maintenance". Live apps are listed first automatically.
 
 ## 5) Contact Form Behavior
 1. Frontend form is in src/components/Contact.jsx

@@ -179,12 +179,25 @@ async function fetchGitHubUserStats(username) {
   }
 }
 
-function sumContributionCounts(svgText) {
-  const matches = svgText.match(/data-count="(\d+)"/g) || []
-  return matches.reduce((sum, item) => {
-    const count = Number(item.replace(/[^\d]/g, ''))
-    return Number.isFinite(count) ? sum + count : sum
-  }, 0)
+function sumContributionCounts(htmlText) {
+  const dataCountMatches = htmlText.match(/data-count="(\d+)"/g) || []
+  if (dataCountMatches.length > 0) {
+    return dataCountMatches.reduce((sum, item) => {
+      const count = Number(item.replace(/[^\d]/g, ''))
+      return Number.isFinite(count) ? sum + count : sum
+    }, 0)
+  }
+
+  // Newer GitHub calendar markup often exposes counts via aria-label tooltips
+  const tooltipMatches = htmlText.matchAll(/aria-label="[^"]*?(\d+)\s+contribution/gi)
+  let total = 0
+  let found = false
+  for (const match of tooltipMatches) {
+    found = true
+    total += Number(match[1]) || 0
+  }
+
+  return found ? total : 0
 }
 
 function parseContributionTotalFromHtml(htmlText) {
@@ -209,7 +222,7 @@ async function fetchContributionsForYear(username, year) {
     `https://github.com/users/${encodeURIComponent(username)}/contributions?from=${fromText}&to=${toText}`,
     {
       headers: {
-        Accept: 'image/svg+xml,text/plain,*/*',
+        Accept: 'text/html,application/xhtml+xml',
         'User-Agent': 'nuthan-portfolio',
       },
     }
@@ -220,12 +233,12 @@ async function fetchContributionsForYear(username, year) {
   }
 
   const htmlText = await response.text()
-  const fromDataCount = sumContributionCounts(htmlText)
-  if (fromDataCount > 0) {
-    return fromDataCount
+  const headingTotal = parseContributionTotalFromHtml(htmlText)
+  if (headingTotal > 0) {
+    return headingTotal
   }
 
-  return parseContributionTotalFromHtml(htmlText)
+  return sumContributionCounts(htmlText)
 }
 
 async function fetchContributionsSoFar(username, fromDateText) {
@@ -238,13 +251,13 @@ async function fetchContributionsSoFar(username, fromDateText) {
   const now = new Date()
   const startYear = from.getFullYear()
   const endYear = now.getFullYear()
-
-  let total = 0
+  const years = []
   for (let year = startYear; year <= endYear; year += 1) {
-    total += await fetchContributionsForYear(username, year)
+    years.push(year)
   }
 
-  return total
+  const totals = await Promise.all(years.map((year) => fetchContributionsForYear(username, year)))
+  return totals.reduce((sum, count) => sum + count, 0)
 }
 
 async function fetchContributionsCurrentYear(username) {

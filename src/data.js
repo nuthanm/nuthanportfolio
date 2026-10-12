@@ -260,6 +260,8 @@ export const skills = [
   },
 ]
 
+// status: "live" | "maintenance"
+// Tip: set status to "maintenance" to disable Launch and show an Under Maintenance message.
 export const portfolio = [
   {
     id: 1,
@@ -270,46 +272,7 @@ export const portfolio = [
     liveUrl: "https://indiagcc.lovable.app/",
     image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Findiagcc.lovable.app%2F?w=1200",
     category: "Job Search",
-  },
-  {
-    id: 2,
-    name: "AI Dev Reference",
-    description:
-      "Searchable commands, skills, agents, and hooks for Claude, Cursor, and GitHub Copilot — one reference, always current.",
-    tech: ["Next.js", "React", "TypeScript"],
-    liveUrl: "https://www.aidevreference.com/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fwww.aidevreference.com%2F?w=1200",
-    category: "Developer Tools",
-  },
-  {
-    id: 3,
-    name: "Let's Evaluate",
-    description:
-      "Talent acquisition platform for structured hiring evaluations. AI assists, humans decide — upload resumes, analyse evidence, and record verdicts.",
-    tech: ["React", "Vercel", "TypeScript"],
-    liveUrl: "https://lets-evaluate.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flets-evaluate.vercel.app%2F?w=1200",
-    category: "Interview Evaluation",
-  },
-  {
-    id: 4,
-    name: "KeepCut",
-    description:
-      "Private, on-device background removal — drop a photo, snip the backdrop, and keep every pixel in your browser.",
-    tech: ["Next.js", "React", "Vercel"],
-    liveUrl: "https://keepcut.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fkeepcut.vercel.app%2F?w=1200",
-    category: "Web App",
-  },
-  {
-    id: 5,
-    name: "SQLinq",
-    description:
-      "Convert SQL queries to LINQ expressions instantly — a developer tool for translating SQL syntax into equivalent LINQ query syntax.",
-    tech: ["SQL", "React", "Vercel"],
-    liveUrl: "https://sqlinq.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fsqlinq.vercel.app%2F?w=1200",
-    category: "Developer Tools",
+    status: "live",
   },
   {
     id: 6,
@@ -320,16 +283,7 @@ export const portfolio = [
     liveUrl: "https://myinvestmenttracker.vercel.app/",
     image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmyinvestmenttracker.vercel.app%2F?w=1200",
     category: "Financial",
-  },
-  {
-    id: 7,
-    name: "FinYatra",
-    description:
-      "Free, India-first personal finance calculators and planners with formulas, worked examples, and multilingual support — SIP, EMI, FIRE, and more.",
-    tech: ["Next.js", "React", "TypeScript"],
-    liveUrl: "https://finyatra.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Ffinyatra.vercel.app%2F?w=1200",
-    category: "Financial",
+    status: "live",
   },
   {
     id: 8,
@@ -340,46 +294,7 @@ export const portfolio = [
     liveUrl: "https://mydebttracker.vercel.app/",
     image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmydebttracker.vercel.app%2F?w=1200",
     category: "Financial",
-  },
-  {
-    id: 9,
-    name: "Learn WIQL",
-    description:
-      "Interactive learning app for understanding WIQL concepts and exploring how to query Azure DevOps work items more effectively.",
-    tech: ["WIQL", "Azure DevOps", "Vercel"],
-    liveUrl: "https://learn-wiql.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flearn-wiql.vercel.app%2F?w=1200",
-    category: "Educational",
-  },
-  {
-    id: 10,
-    name: "WatchProof",
-    description:
-      "YouTube progress export extension with segment-level tracking, skip audit, session logs, and exportable CSV/JSON reports — 100% local storage.",
-    tech: ["Chrome Extension", "Manifest V3", "JavaScript"],
-    liveUrl: "https://nuthanm.github.io/WatchProof",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fnuthanm.github.io%2FWatchProof?w=1200",
-    category: "Browser Extension",
-  },
-  {
-    id: 11,
-    name: "Calmodoro",
-    description:
-      "Calm Pomodoro timer for Chrome with wellness break rituals, micro-reminders, schedule-aware focus sessions, and a live toolbar badge countdown.",
-    tech: ["Chrome Extension", "Manifest V3", "JavaScript"],
-    liveUrl: "https://nuthanm.github.io/Calmodoro",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fnuthanm.github.io%2FCalmodoro?w=1200",
-    category: "Browser Extension",
-  },
-  {
-    id: 12,
-    name: "Exvyn",
-    description:
-      "Exvyn is a tool that helps you to convert excel data into visual representation.",
-    tech: ["Next.js", "React", "TypeScript"],
-    liveUrl: "https://exvyn.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fexvyn.vercel.app%2F?w=1200",
-    category: "Developer Tools",
+    status: "live",
   },
   {
     id: 13,
@@ -390,6 +305,106 @@ export const portfolio = [
     liveUrl: "https://myspendfolio.vercel.app/",
     image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmyspendfolio.vercel.app%2F?w=1200",
     category: "Expense Management",
+    status: "live",
+  },
+  {
+    id: 10,
+    name: "WatchProof",
+    description:
+      "YouTube progress export extension with segment-level tracking, skip audit, session logs, and exportable CSV/JSON reports — 100% local storage.",
+    tech: ["Chrome Extension", "Manifest V3", "JavaScript"],
+    liveUrl: "https://nuthanm.github.io/WatchProof",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fnuthanm.github.io%2FWatchProof?w=1200",
+    category: "Browser Extension",
+    status: "live",
+  },
+  {
+    id: 11,
+    name: "Calmodoro",
+    description:
+      "Calm Pomodoro timer for Chrome with wellness break rituals, micro-reminders, schedule-aware focus sessions, and a live toolbar badge countdown.",
+    tech: ["Chrome Extension", "Manifest V3", "JavaScript"],
+    liveUrl: "https://nuthanm.github.io/Calmodoro",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fnuthanm.github.io%2FCalmodoro?w=1200",
+    category: "Browser Extension",
+    status: "live",
+  },
+  {
+    id: 2,
+    name: "AI Dev Reference",
+    description:
+      "Searchable commands, skills, agents, and hooks for Claude, Cursor, and GitHub Copilot — one reference, always current.",
+    tech: ["Next.js", "React", "TypeScript"],
+    liveUrl: "https://www.aidevreference.com/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fwww.aidevreference.com%2F?w=1200",
+    category: "Developer Tools",
+    status: "maintenance",
+  },
+  {
+    id: 3,
+    name: "Let's Evaluate",
+    description:
+      "Talent acquisition platform for structured hiring evaluations. AI assists, humans decide — upload resumes, analyse evidence, and record verdicts.",
+    tech: ["React", "Vercel", "TypeScript"],
+    liveUrl: "https://lets-evaluate.vercel.app/",
+    image: "/thumbnails/lets-evaluate-v2.svg",
+    category: "Interview Evaluation",
+    status: "maintenance",
+  },
+  {
+    id: 4,
+    name: "KeepCut",
+    description:
+      "Private, on-device background removal — drop a photo, snip the backdrop, and keep every pixel in your browser.",
+    tech: ["Next.js", "React", "Vercel"],
+    liveUrl: "https://keepcut.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fkeepcut.vercel.app%2F?w=1200",
+    category: "Web App",
+    status: "maintenance",
+  },
+  {
+    id: 5,
+    name: "SQLinq",
+    description:
+      "Convert SQL queries to LINQ expressions instantly — a developer tool for translating SQL syntax into equivalent LINQ query syntax.",
+    tech: ["SQL", "React", "Vercel"],
+    liveUrl: "https://sqlinq.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fsqlinq.vercel.app%2F?w=1200",
+    category: "Developer Tools",
+    status: "maintenance",
+  },
+  {
+    id: 7,
+    name: "FinYatra",
+    description:
+      "Free, India-first personal finance calculators and planners with formulas, worked examples, and multilingual support — SIP, EMI, FIRE, and more.",
+    tech: ["Next.js", "React", "TypeScript"],
+    liveUrl: "https://finyatra.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Ffinyatra.vercel.app%2F?w=1200",
+    category: "Financial",
+    status: "maintenance",
+  },
+  {
+    id: 9,
+    name: "Learn WIQL",
+    description:
+      "Interactive learning app for understanding WIQL concepts and exploring how to query Azure DevOps work items more effectively.",
+    tech: ["WIQL", "Azure DevOps", "Vercel"],
+    liveUrl: "https://learn-wiql.vercel.app/",
+    image: "/thumbnails/learn-wiql.svg",
+    category: "Educational",
+    status: "maintenance",
+  },
+  {
+    id: 12,
+    name: "Exvyn",
+    description:
+      "Exvyn is a tool that helps you to convert excel data into visual representation.",
+    tech: ["Next.js", "React", "TypeScript"],
+    liveUrl: "https://exvyn.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fexvyn.vercel.app%2F?w=1200",
+    category: "Developer Tools",
+    status: "maintenance",
   },
   {
     id: 14,
@@ -400,6 +415,7 @@ export const portfolio = [
     liveUrl: "https://private-journal.vercel.app/",
     image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fprivate-journal.vercel.app%2F?w=1200",
     category: "Productivity",
+    status: "maintenance",
   },
   {
     id: 15,
@@ -410,16 +426,7 @@ export const portfolio = [
     liveUrl: "https://mailmind-for-users.vercel.app/",
     image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fmailmind-for-users.vercel.app%2F?w=1200",
     category: "Mail",
-  },
-  {
-    id: 16,
-    name: "LinkVault",
-    description:
-      "Centralized link management. Collect, organize, and share your favorite links in one place.",
-    tech: ["React", "Vercel", "JavaScript"],
-    liveUrl: "https://itsmylinkvault.vercel.app/",
-    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fitsmylinkvault.vercel.app%2F?w=1200",
-    category: "Web App",
+    status: "maintenance",
   },
   {
     id: 17,
@@ -430,5 +437,17 @@ export const portfolio = [
     liveUrl: "https://learn-it-here.vercel.app/",
     image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Flearn-it-here.vercel.app%2F?w=1200",
     category: "Educational",
-  }
+    status: "maintenance",
+  },
+  {
+    id: 16,
+    name: "LinkVault",
+    description:
+      "Centralized link management. Collect, organize, and share your favorite links in one place.",
+    tech: ["React", "Vercel", "JavaScript"],
+    liveUrl: "https://itsmylinkvault.vercel.app/",
+    image: "https://s.wordpress.com/mshots/v1/https%3A%2F%2Fitsmylinkvault.vercel.app%2F?w=1200",
+    category: "Web App",
+    status: "maintenance",
+  },
 ]
