@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { MotionConfig } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import ImportantInfo from './components/ImportantInfo'
@@ -30,9 +31,16 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-primary">
+    <MotionConfig reducedMotion="user">
+    <div className="min-h-screen bg-bg">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-full focus:bg-fg focus:text-bg focus:text-sm focus:font-semibold"
+      >
+        Skip to content
+      </a>
       <Navbar />
-      <main>
+      <main id="main">
         <Hero />
         {uiFlags.showImportantInfoSection && <ImportantInfo />}
         <AiToolsStrip />
@@ -43,5 +51,6 @@ export default function App() {
       </main>
       <Footer />
     </div>
+    </MotionConfig>
   )
 }

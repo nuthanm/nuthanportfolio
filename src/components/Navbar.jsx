@@ -1,29 +1,48 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-scroll'
-import { FiMenu, FiX } from 'react-icons/fi'
+import { AnimatePresence, motion } from 'framer-motion'
+import { FiMenu, FiMoon, FiSun, FiX, FiArrowUpRight } from 'react-icons/fi'
 import { personalInfo, uiFlags } from '../data'
+import { useTheme } from './ui'
 
 const navLinks = [
   { label: 'About', to: 'hero' },
   { label: 'Info', to: 'information' },
-  { label: 'Timeline', to: 'timeline' },
+  { label: 'Experience', to: 'timeline' },
   { label: 'Skills', to: 'skills' },
-  { label: 'Portfolio', to: 'portfolio' },
+  { label: 'Work', to: 'portfolio' },
   { label: 'Contact', to: 'contact' },
 ]
+
+const visibleLinks = navLinks.filter((link) =>
+  link.to === 'information' ? uiFlags.showImportantInfoSection : true
+)
+
+function ThemeToggle() {
+  const { theme, toggle } = useTheme()
+  const isDark = theme === 'dark'
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      title={isDark ? 'Light mode' : 'Dark mode'}
+      className="h-9 w-9 inline-flex items-center justify-center rounded-full border border-line bg-card text-fg-2 hover:text-fg transition-colors"
+    >
+      {isDark ? <FiSun size={16} /> : <FiMoon size={16} />}
+    </button>
+  )
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('hero')
-  const visibleLinks = navLinks.filter((link) =>
-    link.to === 'information' ? uiFlags.showImportantInfoSection : true
-  )
 
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY
-      setScrolled(y > 40)
+      setScrolled(y > 24)
 
       // Keep Contact active near the page end where exact section alignment may not be possible.
       const atBottom = window.innerHeight + y >= document.documentElement.scrollHeight - 4
@@ -32,117 +51,136 @@ export default function Navbar() {
         return
       }
 
-      const probeY = y + 120
+      const probeY = y + 140
       let current = 'hero'
-
       for (const link of visibleLinks) {
         const section = document.getElementById(link.to)
-        if (section && probeY >= section.offsetTop) {
-          current = link.to
-        }
+        if (section && probeY >= section.offsetTop) current = link.to
       }
-
       setActiveSection(current)
     }
 
     onScroll()
-    window.addEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll)
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
     }
-  }, [visibleLinks])
+  }, [])
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-primary/95 backdrop-blur-md shadow-sm border-b border-slate-200' : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
+    <header className="fixed top-0 inset-x-0 z-50 px-3 pt-3 md:pt-4">
+      <nav
+        aria-label="Primary"
+        className={`mx-auto max-w-5xl flex items-center justify-between gap-4 rounded-full border px-3 py-2 pl-5 transition-all duration-300 ${
+          scrolled || menuOpen
+            ? 'border-line bg-card/80 backdrop-blur-xl shadow-soft'
+            : 'border-transparent bg-transparent'
+        }`}
+      >
         <Link
           to="hero"
           smooth
           duration={500}
-          className="text-text-main font-bold text-xl cursor-pointer select-none"
+          href="#hero"
+          className="flex items-center gap-2 text-fg font-semibold cursor-pointer select-none"
         >
-          NM<span className="text-accent">.</span>
+          <span className="h-7 w-7 rounded-lg bg-fg text-bg grid place-items-center text-xs font-bold">NM</span>
+          <span className="hidden sm:inline text-sm">{personalInfo.name}</span>
         </Link>
 
-        {/* Desktop nav */}
-        <ul className="hidden md:flex items-center gap-8">
-          {visibleLinks.map((link) => (
-            <li key={link.to}>
-              <Link
-                to={link.to}
-                smooth
-                duration={500}
-                offset={-70}
-                className={`text-sm font-medium tracking-wide cursor-pointer transition-colors duration-200 ${
-                  activeSection === link.to ? 'text-accent' : 'text-text-secondary hover:text-accent'
-                }`}
-                onClick={() => setActiveSection(link.to)}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
-          <li>
-            <a
-              href={personalInfo.resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 text-sm font-semibold border border-accent text-accent rounded-lg hover:bg-accent hover:text-white transition-all duration-200"
-            >
-              Resume
-            </a>
-          </li>
+        <ul className="hidden md:flex items-center gap-1">
+          {visibleLinks.map((link) => {
+            const active = activeSection === link.to
+            return (
+              <li key={link.to} className="relative">
+                <Link
+                  to={link.to}
+                  smooth
+                  duration={500}
+                  offset={-80}
+                  href={`#${link.to}`}
+                  onClick={() => setActiveSection(link.to)}
+                  className={`relative z-10 block px-3.5 py-1.5 text-sm font-medium rounded-full cursor-pointer transition-colors ${
+                    active ? 'text-fg' : 'text-fg-3 hover:text-fg'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+                {active && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 rounded-full bg-subtle border border-line"
+                    transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                  />
+                )}
+              </li>
+            )
+          })}
         </ul>
 
-        {/* Mobile hamburger */}
-        <button
-          className="md:hidden text-text-main hover:text-accent transition-colors"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
-          {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div className="md:hidden bg-white border-t border-slate-200 px-6 py-4 flex flex-col gap-4">
-          {visibleLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              smooth
-              duration={500}
-              offset={-70}
-              className={`font-medium cursor-pointer transition-colors ${
-                activeSection === link.to ? 'text-accent' : 'text-text-secondary hover:text-accent'
-              }`}
-              onClick={() => {
-                setActiveSection(link.to)
-                setMenuOpen(false)
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
           <a
             href={personalInfo.resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent font-semibold"
-            onClick={() => setMenuOpen(false)}
+            className="hidden md:inline-flex btn-primary !py-2 !px-4"
           >
-            Resume ↗
+            Resume <FiArrowUpRight size={14} />
           </a>
+          <button
+            className="md:hidden h-9 w-9 inline-flex items-center justify-center rounded-full border border-line bg-card text-fg"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? <FiX size={18} /> : <FiMenu size={18} />}
+          </button>
         </div>
-      )}
-    </nav>
+      </nav>
+
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18 }}
+            className="md:hidden mx-auto max-w-5xl mt-2 card p-2 flex flex-col"
+          >
+            {visibleLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                smooth
+                duration={500}
+                offset={-80}
+                href={`#${link.to}`}
+                className={`px-4 py-3 rounded-xl font-medium cursor-pointer transition-colors ${
+                  activeSection === link.to ? 'bg-subtle text-fg' : 'text-fg-2 hover:text-fg'
+                }`}
+                onClick={() => {
+                  setActiveSection(link.to)
+                  setMenuOpen(false)
+                }}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <a
+              href={personalInfo.resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary m-2"
+              onClick={() => setMenuOpen(false)}
+            >
+              Download resume <FiArrowUpRight size={14} />
+            </a>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
   )
 }

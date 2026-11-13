@@ -1,259 +1,176 @@
-import { useMemo, useRef, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
-import { FiExternalLink, FiCode, FiTool } from 'react-icons/fi'
+import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { FiArrowUpRight, FiChevronDown, FiTool } from 'react-icons/fi'
 import { portfolio } from '../data'
-
-const categories = ['All', ...Array.from(new Set(portfolio.map((p) => p.category)))]
-
-const categoryStyles = {
-  Financial: {
-    badge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    frame: 'from-emerald-100 to-teal-100',
-  },
-  'Interview Evaluation': {
-    badge: 'bg-sky-50 text-sky-700 border-sky-200',
-    frame: 'from-sky-100 to-blue-100',
-  },
-  Educational: {
-    badge: 'bg-amber-50 text-amber-700 border-amber-200',
-    frame: 'from-amber-100 to-orange-100',
-  },
-  'Web App': {
-    badge: 'bg-blue-50 text-blue-700 border-blue-200',
-    frame: 'from-blue-100 to-cyan-100',
-  },
-  'Browser Extension': {
-    badge: 'bg-violet-50 text-violet-700 border-violet-200',
-    frame: 'from-violet-100 to-purple-100',
-  },
-  'Job Search': {
-    badge: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-    frame: 'from-indigo-100 to-blue-100',
-  },
-  'Developer Tools': {
-    badge: 'bg-slate-100 text-slate-700 border-slate-200',
-    frame: 'from-slate-100 to-blue-100',
-  },
-  'Expense Management': {
-    badge: 'bg-teal-50 text-teal-700 border-teal-200',
-    frame: 'from-teal-100 to-emerald-100',
-  },
-  Productivity: {
-    badge: 'bg-rose-50 text-rose-700 border-rose-200',
-    frame: 'from-rose-100 to-orange-100',
-  },
-  Mail: {
-    badge: 'bg-cyan-50 text-cyan-700 border-cyan-200',
-    frame: 'from-cyan-100 to-sky-100',
-  },
-}
+import { Reveal, SectionHeader } from './ui'
 
 function isMaintenance(app) {
   return String(app?.status || 'live').toLowerCase() === 'maintenance'
 }
 
-function sortPortfolio(apps) {
-  return [...apps].sort((a, b) => {
-    const aMaint = isMaintenance(a) ? 1 : 0
-    const bMaint = isMaintenance(b) ? 1 : 0
-    if (aMaint !== bMaint) return aMaint - bMaint
-    return Number(a.id) - Number(b.id)
-  })
-}
+// Live projects keep the order they have in data.js; the first one is featured.
+const liveApps = portfolio.filter((app) => !isMaintenance(app))
+const archivedApps = portfolio.filter(isMaintenance)
 
-function AppCard({ app, index }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
-  const [imgFailed, setImgFailed] = useState(false)
-  const maintenance = isMaintenance(app)
-
-  const initials = app.name
+function initialsOf(name) {
+  return name
+    .replace(/[^A-Za-z ]/g, '')
     .split(' ')
+    .filter(Boolean)
     .map((w) => w[0])
     .join('')
     .slice(0, 2)
+    .toUpperCase()
+}
 
-  const tone = categoryStyles[app.category] ?? categoryStyles['Web App']
-
+function Thumbnail({ app, featured }) {
+  const [failed, setFailed] = useState(false)
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.07 }}
-      className={`glass-card overflow-hidden flex flex-col transition-all duration-300 group ${
-        maintenance
-          ? 'border-amber-200/80 opacity-[0.92]'
-          : 'hover:border-blue-300 hover:-translate-y-1'
+    <div
+      className={`relative overflow-hidden rounded-xl border border-line bg-subtle ${
+        featured ? 'aspect-[16/10] lg:aspect-auto lg:flex-1 lg:min-h-[20rem]' : 'aspect-[16/10]'
       }`}
     >
-      {/* App preview / thumbnail */}
-      <div className={`relative h-48 bg-gradient-to-br ${tone.frame} p-3 border-b border-slate-200`}>
-        <div className="h-full rounded-xl border border-white/70 bg-white/70 backdrop-blur-sm overflow-hidden shadow-sm relative">
-          {app.image && !imgFailed ? (
-            <img
-              src={app.image}
-              alt={app.name}
-              loading="lazy"
-              onError={() => setImgFailed(true)}
-              className={`w-full h-full object-cover object-top transition-transform duration-500 ${
-                maintenance ? 'grayscale-[35%] scale-100' : 'group-hover:scale-[1.03]'
-              }`}
-            />
-          ) : (
-            <div className="h-full flex flex-col items-center justify-center gap-2 opacity-75 group-hover:opacity-95 transition-opacity">
-              <div className="w-16 h-16 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center text-accent font-bold text-2xl">
-                {initials}
-              </div>
-            </div>
-          )}
-
-          {maintenance && (
-            <div className="absolute inset-0 bg-slate-900/45 backdrop-blur-[1px] flex items-center justify-center px-4">
-              <div className="flex items-center gap-2 rounded-xl bg-white/95 border border-amber-200 px-3 py-2 text-amber-800 shadow-sm">
-                <FiTool size={14} />
-                <span className="text-xs font-semibold tracking-wide uppercase">Under Maintenance</span>
-              </div>
-            </div>
-          )}
+      {app.image && !failed ? (
+        <img
+          src={app.image}
+          alt={`Screenshot of ${app.name}`}
+          loading="lazy"
+          width="1200"
+          height="750"
+          onError={() => setFailed(true)}
+          className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+        />
+      ) : (
+        <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-accent/15 via-subtle to-subtle">
+          <span className="text-4xl font-semibold text-accent/70">{initialsOf(app.name)}</span>
         </div>
-        {/* Category badge */}
-        <span className={`absolute top-5 right-5 text-xs px-2.5 py-1 rounded-full border font-medium ${tone.badge}`}>
-          {app.category}
-        </span>
-      </div>
+      )}
+    </div>
+  )
+}
 
-      {/* Content */}
-      <div className="p-6 flex flex-col flex-1">
-        <div className="flex items-start justify-between gap-3 mb-2">
-          <h3 className={`font-bold text-xl leading-tight transition-colors ${
-            maintenance ? 'text-slate-700' : 'text-text-main group-hover:text-accent'
-          }`}>
-            {app.name}
-          </h3>
-          {maintenance && (
-            <span className="shrink-0 text-[10px] uppercase tracking-wide px-2 py-1 rounded-md bg-amber-50 text-amber-700 border border-amber-200 font-semibold">
-              Offline
-            </span>
-          )}
-        </div>
-        <p className="text-text-secondary text-sm leading-relaxed flex-1">{app.description}</p>
-
-        {/* Tech chips */}
-        <div className="flex flex-wrap gap-2 mt-4">
-          {app.tech.map((t) => (
-            <span
-              key={t}
-              className="flex items-center gap-1 text-xs px-2.5 py-1 bg-slate-50 rounded-lg text-slate-600 border border-slate-200"
-            >
-              <FiCode size={10} />
-              {t}
-            </span>
-          ))}
-        </div>
-
-        {/* Launch / maintenance action */}
-        {maintenance ? (
-          <div
-            role="status"
-            aria-label={`${app.name} is under maintenance`}
-            className="mt-5 flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-50 text-amber-800 border border-amber-200 rounded-xl text-sm font-semibold cursor-not-allowed"
-          >
-            <FiTool size={14} />
-            Under Maintenance
+function ProjectCard({ app, featured = false, index }) {
+  return (
+    <Reveal
+      delay={Math.min(index * 0.06, 0.3)}
+      className={featured ? 'md:col-span-2 lg:row-span-2' : ''}
+    >
+      <a
+        href={app.liveUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="card group h-full p-3 flex flex-col hover:border-fg-3/50 hover:shadow-lift transition-all duration-300"
+      >
+        <Thumbnail app={app} featured={featured} />
+        <div className={`px-3 pt-5 pb-3 flex flex-col ${featured ? 'md:px-5' : ''}`}>
+          <div className="flex items-center gap-2 text-xs text-fg-3">
+            {featured && (
+              <span className="rounded-full bg-accent/10 text-accent px-2 py-0.5 font-medium">Featured</span>
+            )}
+            <span className="font-mono uppercase tracking-[0.14em]">{app.category}</span>
           </div>
-        ) : (
-          <a
-            href={app.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-5 flex items-center justify-center gap-2 px-4 py-2.5 bg-accent/10 hover:bg-accent text-accent hover:text-white border border-accent/20 hover:border-accent rounded-xl text-sm font-semibold transition-all duration-200"
-          >
-            <FiExternalLink size={14} />
-            Launch App
-          </a>
-        )}
-      </div>
-    </motion.div>
+          <div className="mt-2 flex items-start justify-between gap-3">
+            <h3 className={`font-semibold text-fg leading-tight ${featured ? 'text-2xl md:text-3xl' : 'text-lg'}`}>
+              {app.name}
+            </h3>
+            <span className="shrink-0 h-8 w-8 rounded-full border border-line grid place-items-center text-fg-3 group-hover:bg-fg group-hover:text-bg group-hover:border-fg transition-colors">
+              <FiArrowUpRight size={15} />
+            </span>
+          </div>
+          <p className={`mt-2 text-fg-2 leading-relaxed ${featured ? 'text-base max-w-xl' : 'text-sm line-clamp-3'}`}>
+            {app.description}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {app.tech.map((t) => (
+              <span key={t} className="chip">{t}</span>
+            ))}
+          </div>
+        </div>
+      </a>
+    </Reveal>
+  )
+}
+
+function ArchiveRow({ app }) {
+  return (
+    <li className="grid grid-cols-12 gap-3 items-baseline py-4 border-t border-line first:border-t-0">
+      <span className="col-span-12 sm:col-span-3 font-medium text-fg">{app.name}</span>
+      <span className="col-span-12 sm:col-span-6 text-sm text-fg-3 leading-relaxed">{app.description}</span>
+      <span className="col-span-12 sm:col-span-3 flex sm:justify-end items-center gap-2 text-xs text-fg-3">
+        <span className="font-mono uppercase tracking-[0.12em]">{app.category}</span>
+        <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-amber-700 dark:text-amber-400">
+          <FiTool size={10} /> Offline
+        </span>
+      </span>
+    </li>
   )
 }
 
 export default function Portfolio() {
-  const headerRef = useRef(null)
-  const headerInView = useInView(headerRef, { once: true })
-  const [activeCategory, setActiveCategory] = useState('All')
-
-  const filtered = useMemo(() => {
-    const byCategory =
-      activeCategory === 'All'
-        ? portfolio
-        : portfolio.filter((p) => p.category === activeCategory)
-
-    return sortPortfolio(byCategory)
-  }, [activeCategory])
-
-  const liveCount = filtered.filter((app) => !isMaintenance(app)).length
-  const maintenanceCount = filtered.length - liveCount
+  const [showArchive, setShowArchive] = useState(false)
 
   return (
-    <section id="portfolio" className="section-padding section-atmosphere bg-surface">
+    <section id="portfolio" className="section-padding bg-subtle border-y border-line scroll-mt-20">
       <div className="max-w-6xl mx-auto">
-        <motion.div
-          ref={headerRef}
-          initial={{ opacity: 0, y: 20 }}
-          animate={headerInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-10"
+        <SectionHeader
+          index="03"
+          eyebrow="Work"
+          title="Things I've shipped."
+          description="Side products I design, build and run end to end, mostly finance, productivity and developer tools."
         >
-          <span className="text-accent text-sm font-semibold uppercase tracking-widest">
-            What I've built
-          </span>
-          <h2 className="mt-2 text-3xl md:text-4xl font-bold text-text-main">Portfolio</h2>
-          <p className="mt-3 text-text-secondary max-w-xl mx-auto">
-            A collection of my published apps and projects. Live apps appear first; apps under maintenance stay visible with launch disabled.
+          <p className="text-sm text-fg-3 md:text-right">
+            <span className="text-fg font-semibold">{liveApps.length}</span> live products
+            <br className="hidden md:block" />
+            <span className="md:hidden"> · </span>
+            <span className="text-fg font-semibold">{archivedApps.length}</span> in the archive
           </p>
-        </motion.div>
+        </SectionHeader>
 
-        {/* Filter tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-6">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                activeCategory === cat
-                  ? 'bg-accent text-white shadow-md'
-                  : 'bg-white border border-slate-200 text-text-secondary hover:border-accent/40 hover:text-accent'
-              }`}
-            >
-              {cat}
-            </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {liveApps.map((app, i) => (
+            <ProjectCard key={app.id} app={app} featured={i === 0} index={i} />
           ))}
         </div>
 
-        {(liveCount > 0 || maintenanceCount > 0) && (
-          <div className="flex flex-wrap justify-center gap-3 mb-10 text-xs text-text-secondary">
-            <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-              {liveCount} live
-            </span>
-            <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-              {maintenanceCount} under maintenance
-            </span>
+        {archivedApps.length > 0 && (
+          <div className="mt-10">
+            <button
+              type="button"
+              onClick={() => setShowArchive((v) => !v)}
+              aria-expanded={showArchive}
+              aria-controls="project-archive"
+              className="btn-ghost"
+            >
+              {showArchive ? 'Hide' : 'Show'} archived projects ({archivedApps.length})
+              <FiChevronDown size={15} className={`transition-transform ${showArchive ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence initial={false}>
+              {showArchive && (
+                <motion.div
+                  id="project-archive"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                  className="overflow-hidden"
+                >
+                  <div className="card mt-4 px-5 md:px-6 py-2">
+                    <p className="pt-4 pb-2 text-xs text-fg-3">
+                      These projects are offline for maintenance or being rebuilt. Launch links return once they're back.
+                    </p>
+                    <ul>
+                      {archivedApps.map((app) => (
+                        <ArchiveRow key={app.id} app={app} />
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         )}
-
-        {/* Grid */}
-        <motion.div
-          key={activeCategory}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {filtered.map((app, i) => (
-            <AppCard key={app.id} app={app} index={i} />
-          ))}
-        </motion.div>
       </div>
     </section>
   )

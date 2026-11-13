@@ -26,7 +26,9 @@
       content="Explore Nuthan Murarysetty's portfolio: enterprise engineering work, projects, skills, certifications, and contact details."
     />
     <meta property="og:url" content="https://nuthanportfolio.vercel.app/" />
-    <meta property="og:image" content="https://avatars.githubusercontent.com/u/29816449?s=400&v=4" />
+    <meta property="og:image" content="https://nuthanportfolio.vercel.app/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Nuthan Murarysetty | Application Architect & Full Stack Developer" />
@@ -34,9 +36,10 @@
       name="twitter:description"
       content="Official portfolio of Nuthan Murarysetty with projects, architecture work, technical skills, and contact information."
     />
-    <meta name="twitter:image" content="https://avatars.githubusercontent.com/u/29816449?s=400&v=4" />
+    <meta name="twitter:image" content="https://nuthanportfolio.vercel.app/og-image.jpg" />
     <meta name="twitter:creator" content="@nuthanmurari" />
-    <meta name="theme-color" content="#0f172a" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#090b11" media="(prefers-color-scheme: dark)" />
 
     <script type="application/ld+json">
       {
@@ -44,7 +47,7 @@
         "@type": "Person",
         "name": "Nuthan Murarysetty",
         "url": "https://nuthanportfolio.vercel.app/",
-        "image": "https://avatars.githubusercontent.com/u/29816449?s=400&v=4",
+        "image": "https://nuthanportfolio.vercel.app/profile.jpg",
         "jobTitle": "Application Architect",
         "description": "Application Architect and Full Stack Developer specializing in .NET, Azure, and API-first enterprise systems.",
         "sameAs": [
@@ -72,7 +75,19 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <!-- Apply saved / system theme before first paint to avoid a flash -->
+    <script>
+      (function () {
+        var theme = null
+        try { theme = localStorage.getItem('theme') } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        }
+        if (theme === 'dark') document.documentElement.classList.add('dark')
+      })()
+    </script>
   </head>
   <body>
     <noscript>

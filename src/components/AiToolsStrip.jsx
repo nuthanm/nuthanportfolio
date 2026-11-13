@@ -1,6 +1,7 @@
-import { motion } from 'framer-motion'
 import { SiAnthropic, SiGithubcopilot, SiOpenai } from 'react-icons/si'
+import { FiArrowUpRight } from 'react-icons/fi'
 import { aiTools } from '../data'
+import { Reveal } from './ui'
 
 const iconMap = {
   openai: SiOpenai,
@@ -10,58 +11,48 @@ const iconMap = {
 
 export default function AiToolsStrip() {
   return (
-    <section className="relative px-6 md:px-12 lg:px-24 py-12 overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none opacity-40 [background-image:radial-gradient(#93c5fd_1px,transparent_1px)] [background-size:18px_18px]" />
-      <div className="absolute -top-20 -left-10 w-64 h-64 rounded-full bg-blue-100/70 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-24 right-0 w-72 h-72 rounded-full bg-cyan-100/60 blur-3xl pointer-events-none" />
+    <section aria-labelledby="ai-workflow-title" className="px-5 md:px-10 lg:px-16 pb-20 md:pb-28">
+      <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-8 items-start border-t border-line pt-12">
+        <Reveal className="lg:col-span-4">
+          <p className="eyebrow">AI workflow</p>
+          <h2 id="ai-workflow-title" className="mt-3 text-2xl md:text-3xl font-semibold text-fg leading-tight">
+            AI-accelerated engineering, production-grade standards.
+          </h2>
+          <p className="mt-3 text-sm text-fg-2 leading-relaxed">
+            I use AI tools to explore architecture options faster, automate repetitive work and raise delivery quality, with human review on every change.
+          </p>
+        </Reveal>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.55 }}
-          className="glass-card bg-white/95 border-blue-100 px-6 py-8"
-        >
-          <div className="text-center mb-6">
-            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              AI workflow
-            </span>
-            <h3 className="mt-2 text-2xl md:text-3xl font-bold text-text-main">
-              AI-Accelerated Engineering Workflow
-            </h3>
-            <p className="mt-2 text-sm text-text-secondary max-w-2xl mx-auto">
-              I use AI tools to speed up architecture and development, automate repetitive tasks, and improve delivery quality while maintaining production-grade standards.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-stretch">
-            {aiTools.map((tool) => {
-              const Icon = tool.iconKey ? iconMap[tool.iconKey] : null
-              return (
+        <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {aiTools.map((tool, i) => {
+            const Icon = tool.iconKey ? iconMap[tool.iconKey] : null
+            return (
+              <Reveal key={tool.name} delay={i * 0.06}>
                 <a
-                  key={tool.name}
                   href={tool.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-xl border border-slate-200 bg-slate-50 hover:border-blue-300 hover:bg-white transition-all duration-200 px-4 py-3 flex items-center justify-center gap-2.5"
-                  title={tool.usage}
+                  className="card group h-full p-5 flex items-start gap-4 hover:border-fg-3/50 transition-colors"
                 >
-                  {Icon ? (
-                    <Icon size={22} className="text-accent" />
-                  ) : (
-                    <img
-                      src={tool.iconUrl ?? tool.logoImage}
-                      alt={`${tool.name} logo`}
-                      className="h-5 w-5 object-contain"
-                    />
-                  )}
-                  <span className="text-sm font-semibold text-slate-700">{tool.name}</span>
+                  <span className="h-10 w-10 shrink-0 rounded-xl bg-subtle border border-line grid place-items-center text-fg">
+                    {Icon ? (
+                      <Icon size={18} />
+                    ) : (
+                      <img src={tool.iconUrl ?? tool.logoImage} alt="" width="18" height="18" className="h-[18px] w-[18px] object-contain" />
+                    )}
+                  </span>
+                  <span className="flex-1 min-w-0">
+                    <span className="flex items-center justify-between gap-2 text-sm font-semibold text-fg">
+                      {tool.name}
+                      <FiArrowUpRight size={14} className="text-fg-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                    </span>
+                    <span className="mt-1 block text-sm text-fg-3 leading-snug">{tool.usage}</span>
+                  </span>
                 </a>
-              )
-            })}
-          </div>
-        </motion.div>
+              </Reveal>
+            )
+          })}
+        </div>
       </div>
     </section>
   )

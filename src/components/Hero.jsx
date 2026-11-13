@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-scroll'
-import { FiArrowDown, FiGithub, FiLinkedin, FiMail, FiTwitter } from 'react-icons/fi'
+import { FiArrowRight, FiGithub, FiLinkedin, FiMail, FiMapPin, FiTwitter } from 'react-icons/fi'
 import { SiCodementor, SiMedium } from 'react-icons/si'
-import { githubStats, personalInfo } from '../data'
+import { githubStats, personalInfo, timeline } from '../data'
+
+const coreStack = ['.NET 8', 'C#', 'ASP.NET Web API', 'Azure', 'SQL Server', 'React', 'TypeScript', 'Azure DevOps']
 
 const GITHUB_STATS_CACHE_KEY = 'hero.githubStatsCache.v1'
 
@@ -60,37 +62,6 @@ function writeCachedGithubStats(stats) {
     // Ignore storage errors and continue with in-memory values.
   }
 }
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (delay = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, delay, ease: 'easeOut' },
-  }),
-}
-
-const fadeInRight = {
-  hidden: { opacity: 0, x: -60 },
-  visible: (delay = 0) => ({
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.8, delay, ease: 'easeOut' },
-  }),
-}
-
-const particles = [
-  { id: 1, size: 5, x: '8%', y: '18%', delay: 0.2, duration: 8 },
-  { id: 2, size: 7, x: '18%', y: '62%', delay: 0.6, duration: 10 },
-  { id: 3, size: 4, x: '27%', y: '30%', delay: 0.1, duration: 9 },
-  { id: 4, size: 6, x: '36%', y: '78%', delay: 0.9, duration: 11 },
-  { id: 5, size: 5, x: '45%', y: '22%', delay: 0.4, duration: 8 },
-  { id: 6, size: 8, x: '56%', y: '65%', delay: 0.3, duration: 12 },
-  { id: 7, size: 4, x: '64%', y: '36%', delay: 1.1, duration: 10 },
-  { id: 8, size: 6, x: '72%', y: '16%', delay: 0.8, duration: 9 },
-  { id: 9, size: 5, x: '82%', y: '58%', delay: 0.5, duration: 11 },
-  { id: 10, size: 7, x: '90%', y: '28%', delay: 0.7, duration: 10 },
-]
 
 function parseGithubUsername(value) {
   if (!value) return ''
@@ -213,10 +184,6 @@ export default function Hero() {
     })
   }, [completedYears, liveGitHubStats])
 
-  const hasStarredStats = useMemo(() => {
-    return resolvedStats.some((stat) => String(stat.value || '').includes('*'))
-  }, [resolvedStats])
-
   useEffect(() => {
     if (!githubUsername) {
       return
@@ -287,225 +254,156 @@ export default function Hero() {
     }
   }, [githubStatsEndpoint, githubUsername])
 
+  const currentRole = timeline[0]
+  const socials = [
+    { icon: FiGithub, href: personalInfo.social.github, label: 'GitHub' },
+    { icon: FiLinkedin, href: personalInfo.social.linkedin, label: 'LinkedIn' },
+    { icon: FiTwitter, href: personalInfo.social.twitter, label: 'X (Twitter)' },
+    { icon: SiMedium, href: personalInfo.social.medium, label: 'Medium' },
+    { icon: SiCodementor, href: personalInfo.social.codementor, label: 'CodeMentor' },
+    { icon: FiMail, href: `mailto:${personalInfo.email}`, label: 'Email' },
+  ]
+
+  const tile = (delay) => ({
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] },
+  })
+
   return (
-    <section
-      id="hero"
-      className="min-h-screen flex items-start justify-center section-padding relative overflow-hidden pt-28 md:pt-32"
-    >
-      <div className="absolute top-14 left-10 w-72 h-72 bg-blue-100 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-16 right-16 w-64 h-64 bg-sky-100 rounded-full blur-3xl pointer-events-none" />
+    <section id="hero" className="relative overflow-hidden px-5 md:px-10 lg:px-16 pt-28 md:pt-36 pb-20 md:pb-28">
+      <div aria-hidden="true" className="hero-backdrop absolute inset-0 pointer-events-none" />
 
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-55 [background-image:linear-gradient(to_right,rgba(59,130,246,0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgba(59,130,246,0.14)_1px,transparent_1px)] [background-size:40px_40px]" />
-
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        {particles.map((particle) => (
-          <motion.span
-            key={particle.id}
-            className="absolute rounded-full bg-accent/20"
-            style={{
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              left: particle.x,
-              top: particle.y,
-            }}
-            animate={{
-              y: [0, -12, 0],
-              opacity: [0.2, 0.55, 0.2],
-            }}
-            transition={{
-              duration: particle.duration,
-              delay: particle.delay,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center relative z-10">
-        {/* Left - Details */}
-        <motion.div
-          variants={fadeUp}
-          initial={false}
-          animate="visible"
-          custom={0.2}
-          className="flex flex-col gap-7"
-        >
-          <motion.div
-            initial={false}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 border border-blue-200 rounded-full text-accent text-sm font-semibold w-fit">
-              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+      <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* Intro */}
+        <motion.div {...tile(0)} className="card lg:col-span-8 p-7 md:p-10 flex flex-col justify-between gap-10">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full border border-line bg-subtle px-3 py-1 text-xs font-medium text-fg-2">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60 animate-ping" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
               Open to full-time roles and contract projects
             </span>
-          </motion.div>
 
-          <motion.h1
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-text-main tracking-tight leading-tight"
-          >
-            {personalInfo.name}
-          </motion.h1>
+            <h1 className="mt-6 text-5xl sm:text-6xl lg:text-7xl font-semibold text-fg leading-[0.95] tracking-[-0.04em]">
+              {personalInfo.name.split(' ')[0]}
+              <br />
+              <span className="text-fg-3">{personalInfo.name.split(' ').slice(1).join(' ')}</span>
+            </h1>
 
-          <motion.p
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-xl"
-          >
-            {personalInfo.tagline}
-          </motion.p>
+            <p className="mt-6 font-mono text-sm text-accent">
+              {currentRole?.role} · .NET · Azure · API-first
+            </p>
+            <p className="mt-3 max-w-xl text-lg md:text-xl text-fg-2 leading-relaxed">
+              {personalInfo.tagline}
+            </p>
+          </div>
 
-          <motion.p
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="text-text-secondary text-base leading-relaxed max-w-2xl"
-          >
-            {resolvedBio}
-          </motion.p>
-
-          <motion.div
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55, duration: 0.6 }}
-            className="flex flex-col gap-3 max-w-2xl"
-          >
-            <div className="grid grid-cols-2 gap-3">
-              {resolvedStats.map((stat) => (
-                <div key={stat.label} className="glass-card p-4 bg-white/90">
-                  <p className="text-2xl font-extrabold text-accent">
-                    {String(stat.value || '').endsWith('*')
-                      ? (
-                        <>
-                          {String(stat.value || '').slice(0, -1)}
-                          <sup className="text-xs align-super ml-0.5">*</sup>
-                        </>
-                      )
-                      : stat.value}
-                  </p>
-                  <p className="text-xs text-text-secondary mt-1">{stat.label}</p>
-                </div>
+          <div className="flex flex-wrap items-center justify-between gap-6">
+            <div className="flex flex-wrap gap-3">
+              <Link to="portfolio" smooth duration={600} offset={-80} href="#portfolio" className="btn-primary">
+                View my work <FiArrowRight size={15} />
+              </Link>
+              <Link to="contact" smooth duration={600} offset={-80} href="#contact" className="btn-ghost">
+                Get in touch
+              </Link>
+            </div>
+            <div className="flex items-center gap-1">
+              {socials.map(({ icon: Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target={href.startsWith('mailto:') ? undefined : '_blank'}
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  title={label}
+                  className="h-9 w-9 inline-flex items-center justify-center rounded-full text-fg-3 hover:text-fg hover:bg-subtle transition-colors"
+                >
+                  <Icon size={17} />
+                </a>
               ))}
             </div>
-            {hasStarredStats && !fallbackNotice && (
-              <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                <span className="font-semibold">*</span> indicates fallback or previously cached GitHub values.
-              </p>
-            )}
-            {fallbackNotice && (
-              <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                {fallbackNotice}
-              </div>
-            )}
-            <p className="text-xs text-text-secondary italic mt-2">
-              💡 <span className="font-medium">Note:</span> GitHub statistics are cached and may not reflect real-time updates. They refresh periodically.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            className="flex flex-wrap items-center gap-4"
-          >
-            <Link
-              to="portfolio"
-              smooth
-              duration={600}
-              offset={-70}
-              className="px-7 py-3 bg-accent hover:bg-accent-light text-white font-semibold rounded-xl cursor-pointer transition-all duration-200 shadow-md hover:-translate-y-0.5"
-            >
-              View Portfolio
-            </Link>
-            <Link
-              to="contact"
-              smooth
-              duration={600}
-              offset={-70}
-              className="px-7 py-3 border border-slate-300 text-text-main hover:border-accent hover:text-accent font-semibold rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
-            >
-              Contact Me
-            </Link>
-          </motion.div>
-
-          <motion.div
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-            className="flex items-center gap-4 pt-4 border-t border-slate-200"
-          >
-            {[
-              { icon: FiGithub, href: personalInfo.social.github, label: 'GitHub' },
-              { icon: FiLinkedin, href: personalInfo.social.linkedin, label: 'LinkedIn' },
-              { icon: FiTwitter, href: personalInfo.social.twitter, label: 'Twitter' },
-              { icon: SiMedium, href: personalInfo.social.medium, label: 'Medium' },
-              { icon: SiCodementor, href: personalInfo.social.codementor, label: 'CodeMentor' },
-            ].map(({ icon: Icon, href, label }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className="text-slate-500 hover:text-accent transition-all duration-200 hover:-translate-y-1 inline-flex"
-              >
-                <Icon size={22} />
-              </a>
-            ))}
-            <a
-              href={`mailto:${personalInfo.email}`}
-              className="text-slate-500 hover:text-accent transition-all duration-200 hover:-translate-y-1 inline-flex"
-              aria-label="Email"
-            >
-              <FiMail size={22} />
-            </a>
-          </motion.div>
-        </motion.div>
-
-        {/* Right - Photo */}
-        <motion.div
-          variants={fadeInRight}
-          initial={false}
-          animate="visible"
-          custom={0}
-          className="flex items-center justify-center md:justify-end"
-        >
-          <div className="relative w-[22rem] h-[22rem] md:w-[28rem] md:h-[34rem]">
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-100 to-sky-100 opacity-80 blur-2xl" />
-            <div className="absolute inset-0 rounded-3xl overflow-hidden border border-slate-200 shadow-xl">
-              <img
-                src={personalInfo.photo}
-                alt={personalInfo.name}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent" />
-            </div>
-            <motion.div
-              initial={false}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-              className="absolute -bottom-5 left-6 px-4 py-2 bg-white border border-slate-200 rounded-xl text-text-main text-sm font-semibold shadow"
-            >
-              Based in {personalInfo.location}
-            </motion.div>
           </div>
         </motion.div>
-      </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, y: [0, 8, 0] }}
-        transition={{ delay: 1.2, duration: 1.6, repeat: Infinity }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted"
-      >
-        <FiArrowDown size={20} />
-      </motion.div>
+        {/* Photo */}
+        <motion.div {...tile(0.08)} className="card relative overflow-hidden lg:col-span-4 lg:row-span-2 min-h-[22rem] group">
+          <picture>
+            {personalInfo.photo.endsWith('.jpg') && (
+              <source srcSet={personalInfo.photo.replace(/\.jpg$/, '.webp')} type="image/webp" />
+            )}
+            <img
+              src={personalInfo.photo}
+              alt={`Portrait of ${personalInfo.name}`}
+              width="800"
+              height="800"
+              fetchpriority="high"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover object-[50%_25%] transition-transform duration-700 group-hover:scale-[1.03]"
+            />
+          </picture>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+            <p className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-[0.16em] text-white/70">
+              <FiMapPin size={12} /> Based in {personalInfo.location}
+            </p>
+            <p className="mt-2 text-lg font-semibold leading-tight">
+              {currentRole?.role}
+              <span className="text-white/70 font-normal"> @ {currentRole?.company}</span>
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Stats */}
+        <motion.div {...tile(0.16)} className="card lg:col-span-8 grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-line overflow-hidden">
+          {resolvedStats.map((stat) => {
+            const raw = String(stat.value || '')
+            const cached = raw.endsWith('*')
+            const value = cached ? raw.slice(0, -1) : raw
+            return (
+              <div key={stat.label} className="p-5 md:p-6" title={cached ? 'Last known value (live GitHub data unavailable)' : undefined}>
+                <p className="text-3xl md:text-4xl font-semibold text-fg tabular-nums tracking-tight">
+                  {value}
+                  {stat.label.startsWith('Years') && <span className="text-accent">+</span>}
+                </p>
+                <p className="mt-1.5 text-xs text-fg-3 leading-snug">
+                  {stat.label}
+                  {cached && <span className="ml-1 text-fg-3/70">· cached</span>}
+                </p>
+              </div>
+            )
+          })}
+        </motion.div>
+
+        {/* About */}
+        <motion.div {...tile(0.24)} className="card lg:col-span-7 p-7 md:p-8">
+          <p className="eyebrow">About</p>
+          <p className="mt-4 text-fg-2 leading-relaxed">{resolvedBio}</p>
+        </motion.div>
+
+        {/* Core stack */}
+        <motion.div {...tile(0.3)} className="card lg:col-span-5 p-7 md:p-8 flex flex-col">
+          <p className="eyebrow">Core stack</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {coreStack.map((item) => (
+              <span key={item} className="chip !text-sm !px-3 !py-1.5">
+                {item}
+              </span>
+            ))}
+          </div>
+          <Link
+            to="skills"
+            smooth
+            duration={600}
+            offset={-80}
+            href="#skills"
+            className="mt-auto pt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-2.5 transition-all cursor-pointer"
+          >
+            Full skill matrix <FiArrowRight size={14} />
+          </Link>
+        </motion.div>
+      </div>
     </section>
   )
 }

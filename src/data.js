@@ -8,9 +8,9 @@ export const personalInfo = {
   itCareerStartDate: "2013-12-01",
   bio: "I bring {yearsExperience} years of hands-on experience building enterprise applications using Microsoft .NET, C#, and SQL Server as my core stack. My mainstream work has focused on designing robust backend systems, building secure and scalable Web APIs, and delivering Azure-driven implementations for performance, reliability, and long-term maintainability. Alongside product delivery, I mentor developers and share practical engineering knowledge through technical content.",
   email: "inbox.nuthan@gmail.com",
-  phone: "+91 XXXXXXXXXX", // Keep private or remove
+  phone: "", // Leave empty to hide the phone row on the site
   location: "India",
-  photo: "https://avatars.githubusercontent.com/u/29816449?s=400&v=4", // Your GitHub avatar
+  photo: "/profile.jpg", // 800x800; a .webp twin sits next to it in public/
   resumeUrl: "/NuthanMurarysetty_Resume_CloudEngineer.docx",
   social: {
     github: "https://github.com/nuthanm",
@@ -39,7 +39,7 @@ export const importantInfo = {
     "Project preview screenshots for some portfolio cards are generated through WordPress mShots from publicly accessible URLs.",
     "Technology names and brand names (for example Microsoft, Azure, GitHub, OpenAI, Anthropic, and LinkedIn) belong to their respective owners.",
     "Logo files in this portfolio are simplified visual references created for identification and educational showcase purposes.",
-    "The profile image displayed in this portfolio is from the owner's public GitHub profile.",
+    "The profile image displayed in this portfolio is the owner's own photograph.",
   ],
   preventionItems: [
     "Do not reuse this portfolio content, images, or code in misleading, fraudulent, or impersonation contexts.",

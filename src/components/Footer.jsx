@@ -1,105 +1,97 @@
-import { FiGithub, FiLinkedin, FiTwitter, FiHeart, FiMail } from 'react-icons/fi'
+import { FiArrowUp, FiGithub, FiLinkedin, FiTwitter, FiMail } from 'react-icons/fi'
 import { SiCodementor, SiMedium } from 'react-icons/si'
 import { Link } from 'react-scroll'
 import { personalInfo } from '../data'
 
 const navLinks = [
   { label: 'About', to: 'hero' },
-  { label: 'Timeline', to: 'timeline' },
+  { label: 'Experience', to: 'timeline' },
+  { label: 'Certifications', to: 'certifications' },
   { label: 'Skills', to: 'skills' },
-  { label: 'Portfolio', to: 'portfolio' },
+  { label: 'Work', to: 'portfolio' },
   { label: 'Contact', to: 'contact' },
+]
+
+const socials = [
+  { icon: FiGithub, label: 'GitHub', key: 'github' },
+  { icon: FiLinkedin, label: 'LinkedIn', key: 'linkedin' },
+  { icon: FiTwitter, label: 'X (Twitter)', key: 'twitter' },
+  { icon: SiMedium, label: 'Medium', key: 'medium' },
+  { icon: SiCodementor, label: 'CodeMentor', key: 'codementor' },
 ]
 
 export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-surface border-t border-slate-200 px-6 md:px-12 lg:px-24 py-12">
+    <footer className="border-t border-line bg-subtle px-5 md:px-10 lg:px-16 pt-16 pb-10">
       <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-10 mb-10">
-          {/* Brand */}
-          <div className="flex flex-col gap-4">
-            <span className="text-text-main font-bold text-2xl">
-              NM<span className="text-accent">.</span>
-            </span>
-            <p className="text-text-secondary text-sm leading-relaxed max-w-xs">
-              Building scalable web apps, teaching tech, and sharing my learning journey through blogs and videos.
+        <div className="grid md:grid-cols-12 gap-10">
+          <div className="md:col-span-6">
+            <p className="text-2xl md:text-3xl font-semibold text-fg leading-tight max-w-md">
+              Building scalable systems, teaching tech and sharing what I learn.
             </p>
+            <a
+              href={`mailto:${personalInfo.email}`}
+              className="mt-5 inline-flex items-center gap-2 text-sm text-fg-2 hover:text-accent transition-colors"
+            >
+              <FiMail size={15} /> {personalInfo.email}
+            </a>
           </div>
 
-          {/* Quick links */}
-          <div>
-            <h4 className="text-text-main font-semibold text-sm uppercase tracking-wider mb-4">
-              Quick Links
-            </h4>
-            <ul className="flex flex-col gap-2">
+          <nav aria-label="Footer" className="md:col-span-3">
+            <p className="eyebrow mb-4">Sitemap</p>
+            <ul className="flex flex-col gap-2.5">
               {navLinks.map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}
                     smooth
                     duration={500}
-                    offset={-70}
-                    className="text-text-secondary hover:text-accent text-sm cursor-pointer transition-colors"
+                    offset={-80}
+                    href={`#${link.to}`}
+                    className="text-sm text-fg-2 hover:text-fg cursor-pointer transition-colors"
                   >
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
-          {/* Social & Links */}
-          <div>
-            <h4 className="text-text-main font-semibold text-sm uppercase tracking-wider mb-4">
-              Connect & Follow
-            </h4>
-            <div className="flex flex-col gap-3">
-              {[
-                { icon: FiGithub, label: 'GitHub', href: personalInfo.social.github },
-                { icon: FiLinkedin, label: 'LinkedIn', href: personalInfo.social.linkedin },
-                { icon: FiTwitter, label: 'Twitter', href: personalInfo.social.twitter },
-                { icon: SiMedium, label: 'Medium', href: personalInfo.social.medium },
-                { icon: SiCodementor, label: 'CodeMentor', href: personalInfo.social.codementor },
-              ].map(({ icon: Icon, label, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-text-secondary hover:text-accent text-sm transition-colors"
-                >
-                  <Icon size={16} />
-                  {label}
-                </a>
+          <div className="md:col-span-3">
+            <p className="eyebrow mb-4">Connect</p>
+            <ul className="flex flex-col gap-2.5">
+              {socials.map(({ icon: Icon, label, key }) => (
+                <li key={key}>
+                  <a
+                    href={personalInfo.social[key]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm text-fg-2 hover:text-fg transition-colors"
+                  >
+                    <Icon size={14} /> {label}
+                  </a>
+                </li>
               ))}
-              <a
-                href={`mailto:${personalInfo.email}`}
-                className="flex items-center gap-2 text-text-secondary hover:text-accent text-sm transition-colors"
-              >
-                <FiMail size={16} />
-                {personalInfo.email}
-              </a>
-            </div>
+            </ul>
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-slate-200 pt-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-          <p className="text-muted text-xs flex items-center gap-1.5 justify-center lg:justify-start">
-            Made with <FiHeart size={12} className="text-accent" /> by {personalInfo.name}
-          </p>
-          <div className="flex flex-wrap items-center justify-center lg:justify-end gap-x-3 gap-y-1 text-xs text-slate-500 max-w-full">
-            <p className="text-muted text-xs whitespace-nowrap">© {year} All rights reserved.</p>
-            <span className="text-slate-400">|</span>
-            <a href="#/privacy-policy" className="whitespace-nowrap hover:text-accent transition-colors">
-              Privacy Policy
-            </a>
-            <span className="text-slate-400">|</span>
-            <a href="#/terms-and-conditions" className="whitespace-nowrap hover:text-accent transition-colors">
-              Terms and Conditions
-            </a>
+        <div className="mt-14 pt-6 border-t border-line flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-4 text-xs text-fg-3">
+          <p>© {year} {personalInfo.name}. All rights reserved.</p>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <a href="#/privacy-policy" className="hover:text-fg transition-colors">Privacy Policy</a>
+            <a href="#/terms-and-conditions" className="hover:text-fg transition-colors">Terms and Conditions</a>
+            <Link
+              to="hero"
+              smooth
+              duration={600}
+              href="#hero"
+              className="inline-flex items-center gap-1 hover:text-fg cursor-pointer transition-colors"
+            >
+              Back to top <FiArrowUp size={12} />
+            </Link>
           </div>
         </div>
       </div>

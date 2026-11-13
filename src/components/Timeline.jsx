@@ -1,101 +1,139 @@
-import { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { FiArrowUpRight, FiAward } from 'react-icons/fi'
 import { certifications, timeline } from '../data'
+import { Reveal, SectionHeader } from './ui'
 
-function TimelineItem({ item, index }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
+// Merge consecutive roles at the same company so promotions read as one journey.
+function groupByCompany(items) {
+  return items.reduce((groups, item) => {
+    const last = groups[groups.length - 1]
+    if (last && last.company === item.company) {
+      last.roles.push(item)
+    } else {
+      groups.push({ company: item.company, roles: [item] })
+    }
+    return groups
+  }, [])
+}
 
+function spanOf(roles) {
+  const newest = roles[0].year.split('–')[1]?.trim() ?? ''
+  const oldest = roles[roles.length - 1].year.split('–')[0]?.trim() ?? ''
+  return `${oldest} – ${newest}`
+}
+
+function CompanyBlock({ group, index }) {
+  const isCurrent = /present/i.test(group.roles[0].year)
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 24 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.45, delay: index * 0.08 }}
-      className="relative pl-10"
-    >
-      <span className="absolute left-0 top-2.5 w-3.5 h-3.5 rounded-full bg-accent ring-4 ring-blue-100" />
-      <div className="glass-card p-6 hover:border-blue-300 transition-colors">
-        <span className="inline-block text-xs font-semibold text-accent bg-blue-50 border border-blue-200 px-3 py-1 rounded-full mb-3">
-          {item.year}
-        </span>
-        <h3 className="text-text-main font-bold text-xl">{item.role}</h3>
-        <p className="text-text-secondary text-sm font-semibold mt-1">{item.company}</p>
-        <p className="text-text-secondary text-sm leading-relaxed mt-3">{item.description}</p>
-        <div className="flex flex-wrap gap-2 mt-4">
-          {item.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs px-2.5 py-1 bg-slate-50 rounded-lg text-slate-700 border border-slate-200"
-            >
-              {tag}
+    <Reveal delay={Math.min(index * 0.05, 0.2)} className="grid md:grid-cols-12 gap-4 md:gap-8 py-10 border-t border-line first:border-t-0 first:pt-0">
+      <div className="md:col-span-4">
+        <div className="md:sticky md:top-28">
+          <div className="flex items-center gap-3">
+            <span className="h-10 w-10 rounded-xl bg-subtle border border-line grid place-items-center text-sm font-semibold text-fg">
+              {group.company.replace(/\(.*\)/, '').trim().split(/\s+/).map((w) => w[0]).join('').slice(0, 2)}
             </span>
-          ))}
+            <div>
+              <h3 className="text-lg font-semibold text-fg leading-tight">{group.company}</h3>
+              <p className="text-xs text-fg-3 font-mono mt-0.5">{spanOf(group.roles)}</p>
+            </div>
+          </div>
+          {group.roles.length > 1 && (
+            <p className="mt-3 text-xs text-fg-3">
+              {group.roles.length} roles · {group.roles.length - 1} promotion{group.roles.length > 2 ? 's' : ''}
+            </p>
+          )}
+          {isCurrent && (
+            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Current
+            </span>
+          )}
         </div>
       </div>
-    </motion.div>
+
+      <ol className="md:col-span-8 relative">
+        {group.roles.map((role, i) => (
+          <li key={role.id} className="relative pl-7 pb-8 last:pb-0">
+            {i < group.roles.length - 1 && (
+              <span aria-hidden="true" className="absolute left-[5px] top-3 bottom-0 w-px bg-line" />
+            )}
+            <span
+              aria-hidden="true"
+              className={`absolute left-0 top-1.5 h-[11px] w-[11px] rounded-full border-2 ${
+                i === 0 ? 'border-accent bg-accent' : 'border-line bg-bg'
+              }`}
+            />
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+              <h4 className="text-base md:text-lg font-semibold text-fg">{role.role}</h4>
+              <span className="text-xs font-mono text-fg-3">{role.year}</span>
+            </div>
+            <p className="mt-2 text-sm text-fg-2 leading-relaxed">{role.description}</p>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {role.tags.map((tag) => (
+                <span key={tag} className="chip">{tag}</span>
+              ))}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </Reveal>
   )
 }
 
 export default function Timeline() {
-  return (
-    <section id="timeline" className="section-padding section-atmosphere bg-surface">
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-14">
-          <span className="text-accent text-sm font-semibold uppercase tracking-widest">Career</span>
-          <h2 className="mt-2 text-3xl md:text-4xl font-bold text-text-main">Career Timeline</h2>
-          <p className="mt-3 text-text-secondary max-w-2xl mx-auto">
-            A clear snapshot of my journey from Microsoft stack development to modern full-stack products, mentoring, and technical content creation.
-          </p>
-        </div>
+  const groups = groupByCompany(timeline)
 
-        <div className="relative border-l-2 border-blue-100 ml-3 md:ml-6 flex flex-col gap-6">
-          {timeline.map((item, index) => (
-            <TimelineItem key={item.id} item={item} index={index} />
+  return (
+    <section id="timeline" className="section-padding bg-subtle border-y border-line scroll-mt-20">
+      <div className="max-w-6xl mx-auto">
+        <SectionHeader
+          index="01"
+          eyebrow="Experience"
+          title="From engineer to architect."
+          description="More than a decade on the Microsoft stack, from media and banking platforms to leading enterprise architecture at KANINI."
+        />
+
+        <div>
+          {groups.map((group, i) => (
+            <CompanyBlock key={`${group.company}-${i}`} group={group} index={i} />
           ))}
         </div>
 
-        <div className="mt-14">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl md:text-3xl font-bold text-text-main">Certifications</h3>
-            <p className="mt-2 text-text-secondary text-sm">
-              Professional certifications and credentials relevant to Microsoft, Azure, and enterprise engineering.
-            </p>
+        <div id="certifications" className="mt-20 scroll-mt-28">
+          <div className="flex items-end justify-between gap-4 mb-6">
+            <div>
+              <p className="eyebrow">Credentials</p>
+              <h3 className="mt-2 text-2xl md:text-3xl font-semibold text-fg">Certifications</h3>
+            </div>
+            <span className="hidden sm:inline text-sm text-fg-3">{certifications.length} credentials</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {certifications.map((cert) => (
-              <a
-                key={cert.id}
-                href={cert.credentialUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="glass-card p-5 hover:border-blue-300 transition-all duration-200 hover:-translate-y-1 group"
-              >
-                <div className="flex items-center gap-3 mb-3 min-h-12">
-                  <div className="w-28 h-10 flex items-center justify-start rounded-md bg-white">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {certifications.map((cert, i) => (
+              <Reveal key={cert.id} delay={Math.min(i * 0.04, 0.2)}>
+                <a
+                  href={cert.credentialUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="card group h-full p-5 flex flex-col gap-4 hover:border-fg-3/50 hover:-translate-y-0.5 transition-all"
+                >
+                  <div className="flex items-center justify-between gap-3">
                     {cert.logoImage ? (
                       <img
                         src={cert.logoImage}
                         alt={`${cert.issuer} logo`}
-                        className="max-h-10 w-auto object-contain"
+                        height="28"
+                        className="h-7 w-auto max-w-[9rem] object-contain object-left rounded"
                       />
                     ) : (
-                      <span className="text-sm text-accent font-semibold">{cert.issuer}</span>
+                      <FiAward className="text-accent" size={20} />
                     )}
+                    <FiArrowUpRight size={16} className="text-fg-3 group-hover:text-fg transition-colors" />
                   </div>
-                  <h4 className="text-base font-bold text-text-main leading-snug group-hover:text-accent transition-colors">
-                    {cert.title}
-                  </h4>
-                </div>
-                <p className="text-xs text-slate-500 mt-2">{cert.issuer}</p>
-                <p className="text-xs text-slate-500 mt-1">
-                  Issued {cert.issuedOn} • {cert.year}
-                </p>
-                <span className="inline-flex mt-4 px-3 py-1.5 rounded-md bg-blue-50 text-accent text-xs font-semibold border border-blue-200">
-                  View Credential
-                </span>
-              </a>
+                  <h4 className="text-sm font-semibold text-fg leading-snug">{cert.title}</h4>
+                  <p className="mt-auto text-xs text-fg-3">
+                    {cert.issuer} · {cert.issuedOn}
+                  </p>
+                </a>
+              </Reveal>
             ))}
           </div>
         </div>
