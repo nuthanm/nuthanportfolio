@@ -6,7 +6,8 @@ import { personalInfo } from '../data'
 // existing /api/contact endpoint; nothing is published automatically.
 // Approved entries are copied into `testimonials` in src/data.js by hand.
 
-const relationships = ['Client', 'Trainee / Student', 'Colleague', 'Mentee']
+const relationships = ['Client', 'Trainee / Student', 'Colleague', 'Mentee', 'Other']
+const MAX_OTHER = 60
 const MAX_QUOTE = 600
 
 function resolveEndpoints() {
@@ -44,6 +45,7 @@ export default function FeedbackPage() {
     role: '',
     company: '',
     relationship: '',
+    relationshipOther: '',
     rating: 0,
     quote: '',
     linkedin: '',
@@ -82,6 +84,7 @@ export default function FeedbackPage() {
     if (!form.name.trim()) next.name = 'Please add your name.'
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) next.email = 'Enter a valid email (kept private).'
     if (!form.relationship) next.relationship = 'How do we know each other?'
+    else if (form.relationship === 'Other' && !form.relationshipOther.trim()) next.relationshipOther = 'Tell me how we know each other.'
     if (form.quote.trim().length < 20) next.quote = 'A sentence or two (at least 20 characters) helps.'
     if (form.linkedin && !/^https?:\/\/(www\.)?linkedin\.com\//i.test(form.linkedin)) next.linkedin = 'Use a linkedin.com profile URL.'
     if (!consent) next.consent = 'Please accept the Privacy Policy.'
@@ -96,8 +99,11 @@ export default function FeedbackPage() {
     setErrors(next)
     if (Object.keys(next).length) return
 
+    const relationshipLabel =
+      form.relationship === 'Other' ? `Other: ${form.relationshipOther.trim()}` : form.relationship
+
     const message = [
-      `Relationship: ${form.relationship}`,
+      `Relationship: ${relationshipLabel}`,
       `Role / title: ${form.role || '-'}`,
       `Company / batch: ${form.company || '-'}`,
       `Rating: ${form.rating ? `${form.rating}/5` : '-'}`,
@@ -116,7 +122,7 @@ export default function FeedbackPage() {
         body: JSON.stringify({
           name: form.name,
           email: form.email,
-          subject: `Testimonial from ${form.name} (${form.relationship})`,
+          subject: `Testimonial from ${form.name} (${relationshipLabel})`,
           message,
           website: form.website,
           consent: true,
@@ -192,6 +198,23 @@ export default function FeedbackPage() {
                   ))}
                 </div>
                 {errors.relationship && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{errors.relationship}</p>}
+                {form.relationship === 'Other' && (
+                  <div className="mt-3">
+                    <label htmlFor="fb-relationship-other" className="sr-only">How do you know Nuthan?</label>
+                    <input
+                      id="fb-relationship-other"
+                      autoFocus
+                      maxLength={MAX_OTHER}
+                      value={form.relationshipOther}
+                      onChange={set('relationshipOther')}
+                      className={fieldClass('relationshipOther')}
+                      placeholder="e.g. Workshop attendee, Hackathon teammate, Recruiter"
+                    />
+                    {errors.relationshipOther && (
+                      <p className="mt-2 text-xs text-red-600 dark:text-red-400">{errors.relationshipOther}</p>
+                    )}
+                  </div>
+                )}
               </fieldset>
 
               <div className="grid sm:grid-cols-2 gap-5">

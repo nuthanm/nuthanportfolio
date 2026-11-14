@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { MotionConfig } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -14,6 +14,9 @@ import PrivacyPolicyPage from './components/PrivacyPolicyPage'
 import TermsAndConditionsPage from './components/TermsAndConditionsPage'
 import FeedbackPage from './components/FeedbackPage'
 import { uiFlags } from './data'
+
+// Dev-only: share-card renderer used to produce public/og-cover.jpg
+const OgCard = import.meta.env.DEV ? lazy(() => import('./components/OgCard')) : null
 
 export default function App() {
   const [routeHash, setRouteHash] = useState(() => window.location.hash || '')
@@ -38,6 +41,14 @@ export default function App() {
 
   if (routeHash === '#/terms-and-conditions') {
     return <TermsAndConditionsPage />
+  }
+
+  if (OgCard && routeHash === '#/og-card') {
+    return (
+      <Suspense fallback={null}>
+        <OgCard />
+      </Suspense>
+    )
   }
 
   if (routeHash === '#/feedback') {
