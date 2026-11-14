@@ -30,7 +30,30 @@ export const githubStats = [
 
 export const uiFlags = {
   showImportantInfoSection: false,
+  showTestimonials: true,
 }
+
+// ─── TESTIMONIALS ──────────────────────────────────────────────────────────
+// Feedback arrives by email from the form at #/feedback. Copy only entries
+// marked "OK to publish: YES" here. While the list is empty the section shows
+// only an invitation to leave feedback.
+//
+// relationship: "Client" | "Trainee / Student" | "Colleague" | "Mentee"
+// rating (optional): 1–5   linkedin (optional): profile URL shown as a link
+export const testimonials = [
+  // Example shape (copy, fill in from the feedback email, then uncomment):
+  // {
+  //   id: 1,
+  //   name: "Full Name",
+  //   role: "Engineering Manager",
+  //   company: "Company or training batch",
+  //   relationship: "Client",
+  //   rating: 5,
+  //   linkedin: "https://www.linkedin.com/in/…",
+  //   quote: "Their words, exactly as submitted (trim only for length).",
+  //   featured: true,
+  // },
+]
 
 export const importantInfo = {
   copyrightNotice:

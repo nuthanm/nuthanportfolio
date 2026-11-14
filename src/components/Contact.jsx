@@ -202,7 +202,7 @@ export default function Contact() {
     <section id="contact" className="section-padding scroll-mt-20">
       <div className="max-w-6xl mx-auto">
         <SectionHeader
-          index="04"
+          index="05"
           eyebrow="Contact"
           title="Let's build something."
           description="Have a role, a project or an architecture problem in mind? Send a message or grab my resume."

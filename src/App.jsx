@@ -7,10 +7,12 @@ import AiToolsStrip from './components/AiToolsStrip'
 import Timeline from './components/Timeline'
 import Skills from './components/Skills'
 import Portfolio from './components/Portfolio'
+import Testimonials from './components/Testimonials'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import PrivacyPolicyPage from './components/PrivacyPolicyPage'
 import TermsAndConditionsPage from './components/TermsAndConditionsPage'
+import FeedbackPage from './components/FeedbackPage'
 import { uiFlags } from './data'
 
 export default function App() {
@@ -22,12 +24,24 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [])
 
+  // Coming back from a #/page route to a section anchor (e.g. #testimonials):
+  // the section only exists after this render, so scroll to it afterwards.
+  useEffect(() => {
+    if (!routeHash || routeHash.startsWith('#/')) return
+    const target = document.getElementById(routeHash.slice(1))
+    if (target) requestAnimationFrame(() => target.scrollIntoView())
+  }, [routeHash])
+
   if (routeHash === '#/privacy-policy') {
     return <PrivacyPolicyPage />
   }
 
   if (routeHash === '#/terms-and-conditions') {
     return <TermsAndConditionsPage />
+  }
+
+  if (routeHash === '#/feedback') {
+    return <FeedbackPage />
   }
 
   return (
@@ -47,6 +61,7 @@ export default function App() {
         <Timeline />
         <Skills />
         <Portfolio />
+        {uiFlags.showTestimonials && <Testimonials />}
         <Contact />
       </main>
       <Footer />
