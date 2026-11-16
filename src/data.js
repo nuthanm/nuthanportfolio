@@ -53,6 +53,17 @@ export const testimonials = [
       "He is technically strong and highly interested in automating the tasks we handle in our day-to-day work. He also has the ability to present his work effectively, receive feedback positively, and continuously improve. Overall, he is a great person to work with, and there is still so much potential for him to explore and achieve and reach greater heights which he belongs.",
     featured: true,
   },
+  {
+    id: 2,
+    name: "Prasanth Balasubramanian",
+    role: "Lead Associate",
+    company: "KANINI Software Solution Pvt.Ltd",
+    relationship: "Colleague",
+    rating: 5,
+    linkedin: "https://www.linkedin.com/in/prasanth-balasubramanian/",
+    quote:
+      "Nuthan is highly skilled, productive, and proactive in his approach to work. He consistently looks for opportunities to automate repetitive tasks and simplify processes, making things more efficient for everyone. He is a quick learner and a great mentor who is always willing to help, guide, and share his knowledge with others.\n\nOne thing I particularly admire is how he manages to find time to get involved in multiple tasks and responsibilities while ensuring they are completed effectively. His ability to multitask, take ownership, and deliver results is truly appreciable.",
+  },
   // Example shape (copy, fill in from the feedback email, then uncomment):
   // {
   //   id: 1,

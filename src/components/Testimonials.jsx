@@ -82,15 +82,15 @@ export function Meta({ t }) {
   )
 }
 
-function QuoteCard({ t, hidden = false }) {
+function QuoteCard({ t, hidden = false, fluid = false }) {
   return (
     <figure
-      className="card w-[19rem] sm:w-[22rem] shrink-0 p-6 flex flex-col gap-5"
+      className={`card p-6 flex flex-col gap-5 ${fluid ? 'w-full' : 'w-[19rem] sm:w-[22rem] shrink-0'}`}
       aria-hidden={hidden || undefined}
       {...(hidden ? { inert: '' } : {})}
     >
       <Meta t={t} />
-      <blockquote className="text-fg-2 leading-relaxed">&ldquo;{t.quote}&rdquo;</blockquote>
+      <blockquote className="text-fg-2 leading-relaxed whitespace-pre-line">&ldquo;{t.quote}&rdquo;</blockquote>
       <div className="mt-auto">
         <Person t={t} />
       </div>
@@ -98,46 +98,57 @@ function QuoteCard({ t, hidden = false }) {
   )
 }
 
-// A row of quote cards. If they fit the available width they sit still;
-// if they overflow, the row scrolls continuously (pausing on hover/focus).
-// Re-measures on resize, so it switches mode as the screen width changes.
+// Card widths in the scrolling row (match w-[19rem] / sm:w-[22rem] and gap-4).
+const CARD_WIDTH_SMALL = 304
+const CARD_WIDTH = 352
+const CARD_GAP = 16
+
+// A row of quote cards. If they fit the available width they share it evenly
+// (one card spans the full width); if they overflow, the row scrolls
+// continuously, pausing on hover/focus. Re-checks whenever the width changes.
 function AutoScrollRow({ items }) {
   const viewportRef = useRef(null)
-  const setRef = useRef(null)
-  const [setWidth, setSetWidth] = useState(0)
-  const [overflowing, setOverflowing] = useState(false)
+  const [viewportWidth, setViewportWidth] = useState(0)
   const [paused, setPaused] = useState(false)
   const reduceMotion = useReducedMotion()
 
   useEffect(() => {
     const viewport = viewportRef.current
-    const set = setRef.current
-    if (!viewport || !set) return undefined
-    const measure = () => {
-      // The set carries one trailing gap (pr-4 = 16px) used for the seamless loop.
-      const contentWidth = set.scrollWidth - 16
-      setSetWidth(set.scrollWidth)
-      setOverflowing(contentWidth > viewport.clientWidth + 1)
-    }
+    if (!viewport) return undefined
+    const measure = () => setViewportWidth(viewport.clientWidth)
     measure()
     const observer = new ResizeObserver(measure)
     observer.observe(viewport)
-    observer.observe(set)
     return () => observer.disconnect()
-  }, [items])
+  }, [])
 
+  const cardWidth =
+    typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches ? CARD_WIDTH : CARD_WIDTH_SMALL
+  const contentWidth = items.length * cardWidth + (items.length - 1) * CARD_GAP
+  const overflowing = viewportWidth > 0 && contentWidth > viewportWidth + 1
   const animate = overflowing && !reduceMotion
-  const duration = Math.max(20, setWidth / SCROLL_SPEED_PX_PER_SEC)
+  const duration = Math.max(20, (contentWidth + CARD_GAP) / SCROLL_SPEED_PX_PER_SEC)
+
+  // The outer wrapper is always rendered so the width observer stays attached.
+  if (!overflowing) {
+    return (
+      <div ref={viewportRef}>
+        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${Math.max(1, items.length)}, minmax(0, 1fr))` }}>
+          {items.map((t) => (
+            <QuoteCard key={t.id} t={t} fluid />
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
+    <div ref={viewportRef}>
     <div
-      ref={viewportRef}
       className={`relative ${
         animate
           ? 'overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]'
-          : overflowing
-            ? 'overflow-x-auto snap-x snap-mandatory pb-2'
-            : ''
+          : 'overflow-x-auto snap-x snap-mandatory pb-2'
       }`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -155,9 +166,9 @@ function AutoScrollRow({ items }) {
             : undefined
         }
       >
-        <div ref={setRef} className="flex gap-4 pr-4">
+        <div className="flex gap-4 pr-4">
           {items.map((t) => (
-            <div key={t.id} className={`flex ${overflowing && !animate ? 'snap-start' : ''}`}>
+            <div key={t.id} className={`flex ${animate ? '' : 'snap-start'}`}>
               <QuoteCard t={t} />
             </div>
           ))}
@@ -171,45 +182,7 @@ function AutoScrollRow({ items }) {
         )}
       </div>
     </div>
-  )
-}
-
-// Shown while there are no published testimonials yet.
-function EmptyState() {
-  return (
-    <section id="testimonials" className="section-padding scroll-mt-20">
-      <div className="max-w-6xl mx-auto">
-        <SectionHeader
-          index="04"
-          eyebrow="Kind words"
-          title="Worked with me?"
-          description="Clients, trainees and colleagues: your feedback helps others know what working together is like."
-        />
-        <Reveal className="card bg-fg text-bg border-fg p-7 md:p-10 grid md:grid-cols-12 gap-8 items-center">
-          <div className="md:col-span-8">
-            <p className="text-2xl md:text-3xl font-semibold leading-tight tracking-tight">
-              Attended a session or shipped a project together? I'd love to hear how it went.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              {Object.keys(relationshipTone).map((r) => (
-                <span key={r} className="rounded-full border border-bg/20 px-3 py-1 text-xs opacity-80">
-                  {r}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="md:col-span-4 flex flex-col md:items-end gap-3">
-            <a
-              href="#/feedback"
-              className="inline-flex w-fit items-center gap-2 px-5 py-3 rounded-full bg-bg text-fg text-sm font-semibold hover:opacity-90 transition-opacity"
-            >
-              Share feedback <FiArrowRight size={14} />
-            </a>
-            <p className="text-xs opacity-60 md:text-right">Takes about 2 minutes. Published only with your permission.</p>
-          </div>
-        </Reveal>
-      </div>
-    </section>
+    </div>
   )
 }
 
@@ -265,7 +238,7 @@ export default function Testimonials() {
               &rdquo;
             </span>
             <Meta t={featured} />
-            <blockquote className="relative text-xl md:text-2xl lg:text-[1.7rem] font-medium text-fg leading-snug tracking-tight">
+            <blockquote className="relative whitespace-pre-line text-xl md:text-2xl lg:text-[1.7rem] font-medium text-fg leading-snug tracking-tight">
               &ldquo;{featured.quote}&rdquo;
             </blockquote>
             <div className="mt-auto">

@@ -11,12 +11,28 @@ const navLinks = [
   { label: 'Experience', to: 'timeline' },
   { label: 'Skills', to: 'skills' },
   { label: 'Work', to: 'portfolio' },
+  { label: 'Testimonials', to: 'testimonials' },
   { label: 'Contact', to: 'contact' },
 ]
 
-const visibleLinks = navLinks.filter((link) =>
-  link.to === 'information' ? uiFlags.showImportantInfoSection : true
-)
+const visibleLinks = navLinks.filter((link) => {
+  if (link.to === 'information') return uiFlags.showImportantInfoSection
+  if (link.to === 'testimonials') return uiFlags.showTestimonials
+  return true
+})
+
+// Logo click: back to the plain main page URL (no #section or #/page) and the top.
+function goHome(event) {
+  event.preventDefault()
+  const { pathname, hash, search } = window.location
+  if (hash || search) {
+    window.history.pushState(null, '', pathname || '/')
+    // Let App re-read the URL (pushState doesn't fire hashchange on its own).
+    window.dispatchEvent(new HashChangeEvent('hashchange'))
+  }
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })
+}
 
 function ThemeToggle() {
   const { theme, toggle } = useTheme()
@@ -79,16 +95,19 @@ export default function Navbar() {
             : 'border-transparent bg-transparent'
         }`}
       >
-        <Link
-          to="hero"
-          smooth
-          duration={500}
-          href="#hero"
+        <a
+          href="/"
+          onClick={(event) => {
+            goHome(event)
+            setMenuOpen(false)
+            setActiveSection('hero')
+          }}
+          aria-label={`${personalInfo.name}, back to top of main page`}
           className="flex items-center gap-2 text-fg font-semibold cursor-pointer select-none"
         >
           <span className="h-7 w-7 rounded-lg bg-fg text-bg grid place-items-center text-xs font-bold">NM</span>
-          <span className="hidden sm:inline text-sm">{personalInfo.name}</span>
-        </Link>
+          <span className="hidden sm:inline md:hidden lg:inline text-sm">{personalInfo.name}</span>
+        </a>
 
         <ul className="hidden md:flex items-center gap-1">
           {visibleLinks.map((link) => {
