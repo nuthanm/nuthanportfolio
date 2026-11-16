@@ -41,6 +41,18 @@ export const uiFlags = {
 // relationship: "Client" | "Trainee / Student" | "Colleague" | "Mentee"
 // rating (optional): 1–5   linkedin (optional): profile URL shown as a link
 export const testimonials = [
+  {
+    id: 1,
+    name: "Aravind Chakkarapani",
+    role: "Full Stack Developer",
+    company: "Kanini Software Solutions",
+    relationship: "Colleague",
+    rating: 4,
+    linkedin: "https://www.linkedin.com/in/aravind-chakkarapani/",
+    quote:
+      "He is technically strong and highly interested in automating the tasks we handle in our day-to-day work. He also has the ability to present his work effectively, receive feedback positively, and continuously improve. Overall, he is a great person to work with, and there is still so much potential for him to explore and achieve and reach greater heights which he belongs.",
+    featured: true,
+  },
   // Example shape (copy, fill in from the feedback email, then uncomment):
   // {
   //   id: 1,

@@ -125,6 +125,7 @@ export default function FeedbackPage() {
           subject: `Testimonial from ${form.name} (${relationshipLabel})`,
           message,
           website: form.website,
+          formType: 'testimonial',
           consent: true,
           captchaToken: captcha.token,
           captchaAnswer: Number(captcha.input),

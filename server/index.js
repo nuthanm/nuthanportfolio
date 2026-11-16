@@ -293,7 +293,24 @@ function formatSubmittedAt() {
   }
 }
 
-function renderMailHtml({ name, email, subject, message }) {
+const MAIL_KINDS = {
+  contact: {
+    heading: 'New Contact Form Submission',
+    caption: 'Received from your portfolio website contact form.',
+    subjectPrefix: '[Portfolio]',
+  },
+  testimonial: {
+    heading: 'New Testimonial Received',
+    caption: 'Submitted through your portfolio feedback form. To publish it, add it to testimonials in src/data.js.',
+    subjectPrefix: '[Portfolio Testimonial]',
+  },
+}
+
+function mailKindOf(value) {
+  return value === 'testimonial' ? MAIL_KINDS.testimonial : MAIL_KINDS.contact
+}
+
+function renderMailHtml({ name, email, subject, message, kind = MAIL_KINDS.contact }) {
   const safeName = escapeHtml(name)
   const safeEmail = escapeHtml(email)
   const safeSubject = escapeHtml(subject)
@@ -312,8 +329,8 @@ function renderMailHtml({ name, email, subject, message }) {
               </div>
             </td>
             <td style="vertical-align:middle">
-              <h1 style="margin:0;font-size:20px;line-height:1.3">New Contact Form Submission</h1>
-              <p style="margin:6px 0 0;font-size:13px;color:#475569">Received from your portfolio website contact form.</p>
+              <h1 style="margin:0;font-size:20px;line-height:1.3">${escapeHtml(kind.heading)}</h1>
+              <p style="margin:6px 0 0;font-size:13px;color:#475569">${escapeHtml(kind.caption)}</p>
             </td>
           </tr></table>
         </div>
@@ -412,6 +429,7 @@ app.post('/api/contact', async (req, res) => {
     const email = cleanSingleLine(req.body.email)
     const subject = cleanSingleLine(req.body.subject)
     const message = clean(req.body.message)
+    const kind = mailKindOf(cleanSingleLine(req.body.formType))
     const website = clean(req.body.website)
     const consent = req.body.consent === true
 
@@ -458,9 +476,9 @@ app.post('/api/contact', async (req, res) => {
       from: SMTP_FROM,
       to: MAIL_TO,
       replyTo: email,
-      subject: `[Portfolio] ${subject}`,
+      subject: `${kind.subjectPrefix} ${subject}`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
-      html: renderMailHtml({ name, email, subject, message }),
+      html: renderMailHtml({ name, email, subject, message, kind }),
     })
 
     res.json({ ok: true })
