@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import { FiArrowRight, FiLinkedin, FiStar } from 'react-icons/fi'
-import { testimonials as publishedTestimonials } from '../data'
+import { testimonials as curatedTestimonials } from '../data'
+import { apiEndpoint } from '../apiBase'
 import { sampleTestimonials } from '../sampleTestimonials'
 import { Reveal, SectionHeader } from './ui'
 
@@ -9,8 +10,10 @@ import { Reveal, SectionHeader } from './ui'
 // or ?samples=3 (first three) to see the layout with different amounts of data.
 const sampleParam =
   import.meta.env.DEV && typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('samples') : null
-const testimonials =
-  sampleParam === null ? publishedTestimonials : sampleTestimonials.slice(0, Number(sampleParam) || undefined)
+const usingSamples = sampleParam !== null
+const baseTestimonials = usingSamples
+  ? sampleTestimonials.slice(0, Number(sampleParam) || undefined)
+  : curatedTestimonials
 
 // Auto-scroll settings for the testimonial row (only moves when cards overflow).
 const SCROLL_DIRECTION = 'right' // 'right' = cards travel left → right, 'left' = right → left
@@ -38,7 +41,7 @@ function Stars({ rating }) {
   )
 }
 
-function Person({ t, large }) {
+export function Person({ t, large }) {
   return (
     <figcaption className="flex items-center gap-3">
       <span className={`shrink-0 rounded-full bg-subtle border border-line grid place-items-center font-semibold text-fg-2 ${large ? 'h-12 w-12' : 'h-10 w-10 text-sm'}`}>
@@ -61,7 +64,7 @@ function Person({ t, large }) {
   )
 }
 
-function Meta({ t }) {
+export function Meta({ t }) {
   return (
     <div className="flex items-center justify-between gap-3">
       <span className={`whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium ${relationshipTone[t.relationship] ?? 'bg-subtle text-fg-2'}`}>
@@ -210,7 +213,32 @@ function EmptyState() {
   )
 }
 
+// Quotes approved from email (served by /api/testimonials) are added after
+// the ones curated in src/data.js.
+function useApprovedTestimonials() {
+  const [approved, setApproved] = useState([])
+  useEffect(() => {
+    if (usingSamples) return undefined
+    let cancelled = false
+    fetch(apiEndpoint('testimonials'), { headers: { Accept: 'application/json' } })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!cancelled && Array.isArray(data?.items)) setApproved(data.items)
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [])
+  return approved
+}
+
 export default function Testimonials() {
+  const approved = useApprovedTestimonials()
+  const testimonials = [
+    ...baseTestimonials,
+    ...approved.filter((a) => !baseTestimonials.some((t) => String(t.id) === String(a.id))),
+  ]
   if (!testimonials.length) return <EmptyState />
 
   const featured = testimonials.find((t) => t.featured) ?? testimonials[0]

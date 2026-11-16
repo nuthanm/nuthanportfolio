@@ -1,5 +1,11 @@
 import crypto from 'crypto'
 import nodemailer from 'nodemailer'
+import {
+  createPendingTestimonial,
+  normalizeTestimonial,
+  renderReviewButtons,
+  resolveSiteUrl,
+} from './_lib/testimonials.js'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const clean = (value) => String(value || '').trim()
@@ -92,7 +98,7 @@ const MAIL_KINDS = {
   },
   testimonial: {
     heading: 'New Testimonial Received',
-    caption: 'Submitted through your portfolio feedback form. To publish it, add it to testimonials in src/data.js.',
+    caption: 'Submitted through your portfolio feedback form.',
     subjectPrefix: '[Portfolio Testimonial]',
   },
 }
@@ -101,7 +107,7 @@ function mailKindOf(value) {
   return value === 'testimonial' ? MAIL_KINDS.testimonial : MAIL_KINDS.contact
 }
 
-function renderMailHtml({ name, email, subject, message, kind = MAIL_KINDS.contact }) {
+function renderMailHtml({ name, email, subject, message, kind = MAIL_KINDS.contact, extraHtml = '' }) {
   const safeName = escapeHtml(name)
   const safeEmail = escapeHtml(email)
   const safeSubject = escapeHtml(subject)
@@ -132,7 +138,7 @@ function renderMailHtml({ name, email, subject, message, kind = MAIL_KINDS.conta
             <tr><td style="width:130px;font-size:14px;padding:8px 0;vertical-align:top;border-bottom:1px solid #edf2f7;color:#475569;font-weight:600">Subject</td><td style="font-size:14px;padding:8px 0;vertical-align:top;border-bottom:1px solid #edf2f7;color:#0f172a">${safeSubject}</td></tr>
             <tr><td style="width:130px;font-size:14px;padding:8px 0;vertical-align:top;border-bottom:1px solid #edf2f7;color:#475569;font-weight:600">Submitted</td><td style="font-size:14px;padding:8px 0;vertical-align:top;border-bottom:1px solid #edf2f7;color:#0f172a">${submittedAt}</td></tr>
           </table>
-          <div style="margin-top:14px;padding:14px;border:1px solid #dbe2ea;border-radius:10px;background:#f8fafc;font-size:14px;line-height:1.6;color:#1e293b;white-space:pre-wrap">${safeMessage}</div>
+          <div style="margin-top:14px;padding:14px;border:1px solid #dbe2ea;border-radius:10px;background:#f8fafc;font-size:14px;line-height:1.6;color:#1e293b;white-space:pre-wrap">${safeMessage}</div>${extraHtml}
         </div>
         <div style="border-top:1px solid #dbe2ea;background:#f8fafc;padding:14px 22px 18px">
           <p style="margin:3px 0;font-size:12px;color:#64748b"><strong>Nuthan Murarysetty</strong> | Application Architect</p>
@@ -276,7 +282,7 @@ export default async function handler(req, res) {
     const name = cleanSingleLine(req.body?.name)
     const email = cleanSingleLine(req.body?.email)
     const subject = cleanSingleLine(req.body?.subject)
-    const message = clean(req.body?.message)
+    let message = clean(req.body?.message)
     const kind = mailKindOf(cleanSingleLine(req.body?.formType))
     const website = clean(req.body?.website)
     const consent = req.body?.consent === true
@@ -320,6 +326,25 @@ export default async function handler(req, res) {
       return
     }
 
+    const htmlMessage = message
+    // Testimonials the person allowed publishing get approve/reject buttons.
+    let reviewNote = ''
+    if (kind === MAIL_KINDS.testimonial && req.body?.testimonial?.allowPublish === true) {
+      const record = normalizeTestimonial(req.body.testimonial, name)
+      let links = null
+      if (record) {
+        try {
+          links = await createPendingTestimonial(record, resolveSiteUrl(req), email)
+        } catch (error) {
+          console.error('Could not store testimonial for review:', error)
+        }
+      }
+      reviewNote = links
+        ? renderReviewButtons(links, escapeHtml)
+        : '<p style="margin:14px 0 0;font-size:12px;color:#64748b">One-click approval is unavailable for this submission. To publish it, add it to testimonials in src/data.js.</p>'
+      if (links) message = `${message}\n\nApprove & publish: ${links.approveUrl}\nReject: ${links.rejectUrl}`
+    }
+
     const transporter = nodemailer.createTransport({
       host: SMTP_HOST,
       port: SMTP_PORT,
@@ -336,7 +361,7 @@ export default async function handler(req, res) {
       replyTo: email,
       subject: `${kind.subjectPrefix} ${subject}`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
-      html: renderMailHtml({ name, email, subject, message, kind }),
+      html: renderMailHtml({ name, email, subject, message: htmlMessage, kind, extraHtml: reviewNote }),
     })
 
     res.status(200).json({ ok: true })

@@ -126,6 +126,17 @@ export default function FeedbackPage() {
           message,
           website: form.website,
           formType: 'testimonial',
+          // Structured copy used for one-click approval (only stored when allowed).
+          testimonial: {
+            relationship: form.relationship,
+            relationshipOther: form.relationshipOther,
+            role: form.role,
+            company: form.company,
+            rating: form.rating || undefined,
+            linkedin: form.linkedin,
+            quote: form.quote.trim(),
+            allowPublish,
+          },
           consent: true,
           captchaToken: captcha.token,
           captchaAnswer: Number(captcha.input),

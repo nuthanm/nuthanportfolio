@@ -5,6 +5,14 @@ import express from 'express'
 import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
 import nodemailer from 'nodemailer'
+import {
+  createPendingTestimonial,
+  handleList,
+  handleReview,
+  normalizeTestimonial,
+  renderReviewButtons,
+  resolveSiteUrl,
+} from '../api/_lib/testimonials.js'
 
 dotenv.config()
 
@@ -26,7 +34,10 @@ const SMTP_PASS = process.env.SMTP_PASS || ''
 const SMTP_FROM = process.env.SMTP_FROM || SMTP_USER
 const MAIL_TO = process.env.MAIL_TO || SMTP_USER
 
-const transporter = nodemailer.createTransport({
+// MAIL_TRANSPORT=json logs emails to the console instead of sending (local testing).
+const transporter = process.env.MAIL_TRANSPORT === 'json'
+  ? nodemailer.createTransport({ jsonTransport: true })
+  : nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT,
   secure: SMTP_SECURE,
@@ -301,7 +312,7 @@ const MAIL_KINDS = {
   },
   testimonial: {
     heading: 'New Testimonial Received',
-    caption: 'Submitted through your portfolio feedback form. To publish it, add it to testimonials in src/data.js.',
+    caption: 'Submitted through your portfolio feedback form.',
     subjectPrefix: '[Portfolio Testimonial]',
   },
 }
@@ -310,7 +321,7 @@ function mailKindOf(value) {
   return value === 'testimonial' ? MAIL_KINDS.testimonial : MAIL_KINDS.contact
 }
 
-function renderMailHtml({ name, email, subject, message, kind = MAIL_KINDS.contact }) {
+function renderMailHtml({ name, email, subject, message, kind = MAIL_KINDS.contact, extraHtml = '' }) {
   const safeName = escapeHtml(name)
   const safeEmail = escapeHtml(email)
   const safeSubject = escapeHtml(subject)
@@ -341,7 +352,7 @@ function renderMailHtml({ name, email, subject, message, kind = MAIL_KINDS.conta
             <tr><td style="width:130px;font-size:14px;padding:8px 0;vertical-align:top;border-bottom:1px solid #edf2f7;color:#475569;font-weight:600">Subject</td><td style="font-size:14px;padding:8px 0;vertical-align:top;border-bottom:1px solid #edf2f7;color:#0f172a">${safeSubject}</td></tr>
             <tr><td style="width:130px;font-size:14px;padding:8px 0;vertical-align:top;border-bottom:1px solid #edf2f7;color:#475569;font-weight:600">Submitted</td><td style="font-size:14px;padding:8px 0;vertical-align:top;border-bottom:1px solid #edf2f7;color:#0f172a">${submittedAt}</td></tr>
           </table>
-          <div style="margin-top:14px;padding:14px;border:1px solid #dbe2ea;border-radius:10px;background:#f8fafc;font-size:14px;line-height:1.6;color:#1e293b;white-space:pre-wrap">${safeMessage}</div>
+          <div style="margin-top:14px;padding:14px;border:1px solid #dbe2ea;border-radius:10px;background:#f8fafc;font-size:14px;line-height:1.6;color:#1e293b;white-space:pre-wrap">${safeMessage}</div>${extraHtml}
         </div>
         <div style="border-top:1px solid #dbe2ea;background:#f8fafc;padding:14px 22px 18px">
           <p style="margin:3px 0;font-size:12px;color:#64748b"><strong>Nuthan Murarysetty</strong> | Application Architect</p>
@@ -428,7 +439,7 @@ app.post('/api/contact', async (req, res) => {
     const name = cleanSingleLine(req.body.name)
     const email = cleanSingleLine(req.body.email)
     const subject = cleanSingleLine(req.body.subject)
-    const message = clean(req.body.message)
+    let message = clean(req.body.message)
     const kind = mailKindOf(cleanSingleLine(req.body.formType))
     const website = clean(req.body.website)
     const consent = req.body.consent === true
@@ -472,21 +483,46 @@ app.post('/api/contact', async (req, res) => {
       return
     }
 
-    await transporter.sendMail({
+    const htmlMessage = message
+    // Testimonials the person allowed publishing get approve/reject buttons.
+    let reviewNote = ''
+    if (kind === MAIL_KINDS.testimonial && req.body?.testimonial?.allowPublish === true) {
+      const record = normalizeTestimonial(req.body.testimonial, name)
+      let links = null
+      if (record) {
+        try {
+          links = await createPendingTestimonial(record, resolveSiteUrl(req), email)
+        } catch (error) {
+          console.error('Could not store testimonial for review:', error)
+        }
+      }
+      reviewNote = links
+        ? renderReviewButtons(links, escapeHtml)
+        : '<p style="margin:14px 0 0;font-size:12px;color:#64748b">One-click approval is unavailable for this submission. To publish it, add it to testimonials in src/data.js.</p>'
+      if (links) message = `${message}\n\nApprove & publish: ${links.approveUrl}\nReject: ${links.rejectUrl}`
+    }
+
+    const info = await transporter.sendMail({
       from: SMTP_FROM,
       to: MAIL_TO,
       replyTo: email,
       subject: `${kind.subjectPrefix} ${subject}`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
-      html: renderMailHtml({ name, email, subject, message, kind }),
+      html: renderMailHtml({ name, email, subject, message: htmlMessage, kind, extraHtml: reviewNote }),
     })
 
+    if (process.env.MAIL_TRANSPORT === 'json') console.log('[mail]', info.message)
     res.json({ ok: true })
   } catch (error) {
     console.error('Contact endpoint error:', error)
     res.status(500).json({ ok: false, error: 'Unable to send message right now.' })
   }
 })
+
+// Testimonial approval (same handlers as the Vercel functions)
+app.get('/api/testimonials', handleList)
+app.get('/api/testimonial-review', handleReview)
+app.post('/api/testimonial-review', handleReview)
 
 app.listen(PORT, () => {
   console.log(`Contact API listening on http://localhost:${PORT}`)

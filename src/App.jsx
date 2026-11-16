@@ -13,6 +13,7 @@ import Footer from './components/Footer'
 import PrivacyPolicyPage from './components/PrivacyPolicyPage'
 import TermsAndConditionsPage from './components/TermsAndConditionsPage'
 import FeedbackPage from './components/FeedbackPage'
+import ReviewPage from './components/ReviewPage'
 import { uiFlags } from './data'
 
 // Dev-only: share-card renderer used to produce public/og-cover.jpg
@@ -49,6 +50,11 @@ export default function App() {
         <OgCard />
       </Suspense>
     )
+  }
+
+  if (routeHash.startsWith('#/review')) {
+    // Keyed by the URL so opening another review link in the same tab reloads it.
+    return <ReviewPage key={routeHash} />
   }
 
   if (routeHash === '#/feedback') {
