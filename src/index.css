@@ -117,6 +117,17 @@
   }
 }
 
+/* Testimonial auto-scroll. The track holds the list twice, so shifting by
+   half its width loops seamlessly. Used via inline style in Testimonials.jsx. */
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes marquee-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
 /* Thin themed scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
