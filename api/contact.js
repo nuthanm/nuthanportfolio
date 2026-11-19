@@ -4,6 +4,7 @@ import {
   createPendingTestimonial,
   normalizeTestimonial,
   renderReviewButtons,
+  testimonialFromRequest,
   resolveSiteUrl,
 } from './_lib/testimonials.js'
 
@@ -329,8 +330,9 @@ export default async function handler(req, res) {
     const htmlMessage = message
     // Testimonials the person allowed publishing get approve/reject buttons.
     let reviewNote = ''
-    if (kind === MAIL_KINDS.testimonial && req.body?.testimonial?.allowPublish === true) {
-      const record = normalizeTestimonial(req.body.testimonial, name)
+    const submitted = kind === MAIL_KINDS.testimonial ? testimonialFromRequest(req.body) : null
+    if (submitted?.allowPublish === true) {
+      const record = normalizeTestimonial(submitted, name)
       let links = null
       if (record) {
         try {

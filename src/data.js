@@ -64,6 +64,16 @@ export const testimonials = [
     quote:
       "Nuthan is highly skilled, productive, and proactive in his approach to work. He consistently looks for opportunities to automate repetitive tasks and simplify processes, making things more efficient for everyone. He is a quick learner and a great mentor who is always willing to help, guide, and share his knowledge with others.\n\nOne thing I particularly admire is how he manages to find time to get involved in multiple tasks and responsibilities while ensuring they are completed effectively. His ability to multitask, take ownership, and deliver results is truly appreciable.",
   },
+  {
+    id: 3,
+    name: "Naveen Kumar",
+    role: "Senior Software Developer",
+    company: "Chennai",
+    relationship: "Colleague",
+    rating: 5,
+    quote:
+      "During the DNAV Ireland feature project, we initially did not have an architect to provide technical and architectural guidance. After Nuthan joined our team as the architect, he took ownership of the design and architectural aspects, allowing the development team to focus entirely on implementation. He also provided valuable technical guidance and support during code reviews. His contribution made a significant difference to the project and played an important role in helping us deliver it on time.",
+  },
   // Example shape (copy, fill in from the feedback email, then uncomment):
   // {
   //   id: 1,

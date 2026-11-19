@@ -153,6 +153,41 @@ export function normalizeTestimonial(input, name) {
   return record
 }
 
+// Older copies of the feedback page (a tab left open across a deploy) send
+// only the text message, without the structured `testimonial` object. Rebuild
+// it from that text so those submissions still get approve/reject buttons.
+export function testimonialFromMessage(message) {
+  const text = clean(message).replace(/\r\n/g, '\n')
+  const field = (label) => {
+    const match = text.match(new RegExp(`^${label}:[ \\t]*(.*)$`, 'mi'))
+    const value = match ? oneLine(match[1]) : ''
+    return value === '-' ? '' : value
+  }
+  const feedbackAt = text.search(/^Feedback:[ \t]*$/m)
+  if (feedbackAt < 0) return null
+
+  const relationship = field('Relationship')
+  const other = relationship.match(/^Other:\s*(.*)$/i)
+  const rating = field('Rating').match(/^([1-5])\/5$/)
+  return {
+    relationship: other ? 'Other' : relationship,
+    relationshipOther: other ? other[1] : '',
+    role: field('Role / title'),
+    company: field('Company / batch'),
+    rating: rating ? Number(rating[1]) : undefined,
+    linkedin: field('LinkedIn'),
+    quote: text.slice(feedbackAt).replace(/^Feedback:[ \t]*\n?/, '').trim(),
+    allowPublish: /^YES\b/.test(field('OK to publish on site')),
+  }
+}
+
+// The structured testimonial from a request body, falling back to the message text.
+export function testimonialFromRequest(body) {
+  const structured = body?.testimonial
+  if (structured && typeof structured === 'object') return structured
+  return testimonialFromMessage(body?.message)
+}
+
 // Public fields only: never expose the submitter's email.
 function toPublic(record) {
   const { id, name, role, company, relationship, rating, linkedin, quote, approvedAt } = record

@@ -11,6 +11,7 @@ import {
   handleReview,
   normalizeTestimonial,
   renderReviewButtons,
+  testimonialFromRequest,
   resolveSiteUrl,
 } from '../api/_lib/testimonials.js'
 
@@ -486,8 +487,9 @@ app.post('/api/contact', async (req, res) => {
     const htmlMessage = message
     // Testimonials the person allowed publishing get approve/reject buttons.
     let reviewNote = ''
-    if (kind === MAIL_KINDS.testimonial && req.body?.testimonial?.allowPublish === true) {
-      const record = normalizeTestimonial(req.body.testimonial, name)
+    const submitted = kind === MAIL_KINDS.testimonial ? testimonialFromRequest(req.body) : null
+    if (submitted?.allowPublish === true) {
+      const record = normalizeTestimonial(submitted, name)
       let links = null
       if (record) {
         try {
